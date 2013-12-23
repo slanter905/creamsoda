@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual C# Express 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TequilaPC", "TequilaPC\TequilaPC.csproj", "{18DD5C84-F8F4-4EBA-B2B5-5EA31D57C162}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		AppStore|x86 = AppStore|x86
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{18DD5C84-F8F4-4EBA-B2B5-5EA31D57C162}.AppStore|x86.ActiveCfg = Release|x86
+		{18DD5C84-F8F4-4EBA-B2B5-5EA31D57C162}.AppStore|x86.Build.0 = Release|x86
+		{18DD5C84-F8F4-4EBA-B2B5-5EA31D57C162}.Debug|x86.ActiveCfg = Debug|x86
+		{18DD5C84-F8F4-4EBA-B2B5-5EA31D57C162}.Debug|x86.Build.0 = Debug|x86
+		{18DD5C84-F8F4-4EBA-B2B5-5EA31D57C162}.Release|x86.ActiveCfg = Release|x86
+		{18DD5C84-F8F4-4EBA-B2B5-5EA31D57C162}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+	EndGlobalSection
+EndGlobal
