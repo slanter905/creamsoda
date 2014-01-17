@@ -130,6 +130,7 @@
             this.listBox1.Name = "listBox1";
             this.listBox1.Size = new System.Drawing.Size(238, 275);
             this.listBox1.TabIndex = 5;
+            this.listBox1.DoubleClick += new System.EventHandler(this.btnPlay_Click);
             // 
             // timer1
             // 

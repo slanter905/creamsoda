@@ -85,12 +85,16 @@ namespace Tequila
                 SelfRelocate();
                 ConsolidateVirtualStore();
 
+
+                Settings.MainRepo = ManifestURL;
+
                 return true;
 
             } catch (Exception ex) {
                 MyToolkit.ErrorReporter(ex, this.Name + ".Setup");
                 return false;
             }
+
         }
 
         private void SelfRelocate() {
@@ -346,7 +350,16 @@ namespace Tequila
 
                         listBox1.DisplayMember = "Text";
                         listBox1.DataSource = items;
-                        listBox1.SelectedIndex = 0;
+
+                        try
+                        {
+                            int i = Settings.DefaultProfile;
+                            if (i < listBox1.Items.Count && i >= 0) listBox1.SelectedIndex = i;
+                        }
+                        catch (Exception ex)
+                        {
+                            listBox1.SelectedIndex = 0;
+                        }
                     }
 
                 Progress.Value = MyToolkit.MinMax(myWorker.CurProgress, 0, 100);
@@ -367,9 +380,12 @@ namespace Tequila
                 startInfo.Arguments = ((LaunchProfile)listBox1.SelectedItem).Params;
                 startInfo.Arguments += " " + Settings.GameParams;
 
+                Settings.DefaultProfile = listBox1.SelectedIndex;
+
                 Process.Start(startInfo);
                 if (Settings.QuitOnLaunch) Application.Exit();
-                
+
+
             } catch (Exception ex) {
                 MyToolkit.ErrorReporter(ex, this.Name + ".btnPlay_Click");
             }

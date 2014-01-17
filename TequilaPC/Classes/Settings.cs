@@ -13,6 +13,18 @@ namespace Tequila
 
         public static bool SetupNeeded {
             get {
+            }
+        }
+
+        public static string MainRepo
+        {
+            get
+            {
+                return TequilaRegistry.GetValue("MainRepo", "").ToString();
+            }
+            set
+            {
+                TequilaRegistry.SetValue("MainRepo", value);
                 return GamePath == "" || !File.Exists(Path.Combine(GamePath, "icon.exe"));
             }
         }
@@ -89,7 +101,20 @@ namespace Tequila
         }
 
 
-
+        public static int DefaultProfile
+        {
+            get
+            {
+                int indx;
+                bool success = int.TryParse(TequilaRegistry.GetValue("DefaultProfile", -1).ToString(), out indx);
+                if (success) return indx;
+                else return 0;
+            }
+            set
+            {
+                TequilaRegistry.SetValue("DefaultProfile", value);
+            }
+        }
 
         public static void Reset() {
             TequilaRegistry.DeleteValue("CoHPath");
