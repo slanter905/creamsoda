@@ -259,45 +259,81 @@ namespace Tequila
 
                 HTTP client = new HTTP();
 
-                if (client.StartDownload(new AsyncCompletedEventHandler(DownloadFileComplete),
-                                     new DownloadProgressChangedEventHandler(dlProgress),
-                                     file.DownloadURL,
-                                     file.FullName + ".download")){
-                    m_Status = "Downloading";
-                    m_DownloadActive = true;
-                }
+                bool keepTrying = true;
+                string DownloadURL = file.DownloadURL;;
 
-                m_current = file.FullName;
-                
-                while (m_DownloadActive) {
-                    if (Kill)
+                while (keepTrying)
+                {
+                    try
                     {
-                        client.CancelDownload();
-                        return;
+                        if (client.StartDownload(new AsyncCompletedEventHandler(DownloadFileComplete),
+                                             new DownloadProgressChangedEventHandler(dlProgress),
+                                             DownloadURL,
+                                             file.FullName + ".download"))
+                        {
+                            m_Status = "Downloading";
+                            m_DownloadActive = true;
+                        }
                     }
-                    System.Threading.Thread.Sleep(10);
-                }
+                    catch (Exception ex) {
 
-                Fingerprint Downloaded = new Fingerprint(file.RootPath, file.FileName + ".download");
-
-                if (!Downloaded.Equals(file)) {
-                    File.Delete(file.FullName + ".download");
-                    string Msg = "Download error: " + file.FileName;
-
-                    if (Downloaded.Size != file.Size) Msg += "\r\nSize mismatch (" + Downloaded.Size + " vs " + file.Size + ")";
-                    if (Downloaded.Checksum != file.Checksum) Msg += "\r\nChecksum Mismatch (" + Downloaded.Checksum + " vs " + file.Checksum + ")";
-
-                    if (file.Warn) m_ErrorLog.Add(Msg);
-                    else m_WarningLog.Add(Msg);
-                } else {
-                    if (File.Exists(file.FullName))
-                    {
-                        File.SetAttributes(file.FullName, File.GetAttributes(file.FullName) & ~FileAttributes.ReadOnly);
-                        File.Delete(file.FullName);
+                        string er = ex.Message;
+                    
                     }
 
-                    File.Move(file.FullName + ".download", file.FullName);
-                    FlagVerified(file.FullName, file.Size, file.Checksum);
+                    m_current = file.FullName;
+
+                    while (client.Active)
+                    {
+                        if (Kill)
+                        {
+                            client.CancelDownload();
+                            return;
+                        }
+                        System.Threading.Thread.Sleep(10);
+                    }
+
+                    Fingerprint Downloaded = new Fingerprint(file.RootPath, file.FileName + ".download");
+
+                    if (!Downloaded.Equals(file))
+                    {
+                        // OK this file is no good, delete it.                  
+                        File.Delete(file.FullName + ".download");
+                        
+                        // lets try a different url...                          
+                        DownloadURL = file.DownloadURL;
+
+                        // Did we get a blank URL?                              
+                        if (DownloadURL == "")
+                        {
+                            // OK stop trying and report error...               
+                            keepTrying = false;
+
+                            string Msg = "Download error: " + file.FileName;
+                            if (Downloaded.Size == 0) Msg += "\r\nWas unable to download file";
+                            else
+                            {
+                                if (Downloaded.Size != file.Size) Msg += "\r\nSize mismatch (" + Downloaded.Size + " vs " + file.Size + ")";
+                                if (Downloaded.Checksum != file.Checksum) Msg += "\r\nChecksum Mismatch (" + Downloaded.Checksum + " vs " + file.Checksum + ")";
+                            }
+                            if (file.Warn) m_ErrorLog.Add(Msg);
+                            else m_WarningLog.Add(Msg);
+                        }
+                    }
+                    else
+                    {
+                        if (File.Exists(file.FullName))
+                        {
+                            File.SetAttributes(file.FullName, File.GetAttributes(file.FullName) & ~FileAttributes.ReadOnly);
+                            File.Delete(file.FullName);
+                        }
+
+                        // We are done, we dont need to keep trying (infinite loop if we dont set this)
+                        keepTrying = false;
+                        File.Move(file.FullName + ".download", file.FullName);
+                        FlagVerified(file.FullName, file.Size, file.Checksum);
+                    }
+
                 }
 
                 m_Downloaded += file.Size;

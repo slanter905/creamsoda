@@ -364,8 +364,9 @@ namespace Tequila
                     return;
                 }
 
-                if (myWorker.ForumURL != "" && myWorker.ForumURL != webBrowser1.Url.AbsoluteUri && !webBrowser1.IsBusy)
+                if (myWorker.ForumURL != "" && myWorker.ForumURL != webBrowser1.Tag && myWorker.ForumURL != webBrowser1.Url.AbsoluteUri && !webBrowser1.IsBusy)
                 {
+                    webBrowser1.Tag = myWorker.ForumURL;
                     webBrowser1.Navigate(myWorker.ForumURL);
                 }
 
