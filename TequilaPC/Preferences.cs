@@ -16,10 +16,16 @@ namespace Tequila
         public Preferences()
         {
             InitializeComponent();
+            lblInstallPath.Text = Settings.GamePath;
         }
 
         private void btnOK_Click(object sender, EventArgs e)
         {
+            if (lbManifests.Text != Settings.LastManifest)
+            {
+                Settings.LastManifest = lbManifests.Text;
+                ReValidate = true;
+            }
             this.Close();
         }
 
@@ -57,12 +63,100 @@ namespace Tequila
             txtParameters.Text = Settings.GameParams;
             btnColor.BackColor = Settings.BGColor;
             btnTextColor.BackColor = Settings.TextColor;
+            
+            List<string> Manifests = Settings.Manifests;
+            lbManifests.DataSource = Manifests;
+
+            // Attempt to re-select the last used manifest      //
+            try {
+                for (int i = 0; i < Manifests.Count; i++) {
+                    if (Manifests[i] == Settings.LastManifest) {
+                        lbManifests.SelectedIndex = i;
+                    }
+                }
+            } catch (Exception ex) {}
         }
 
         private void btnRevalidate_Click(object sender, EventArgs e)
         {
             ReValidate = true;
             this.Close();
+        }
+
+        private void btnInstallPathBrowse_Click(object sender, EventArgs e)
+        {
+            string myPath = "";
+            bool PathValid = false;
+            FolderBrowserDialog FileBox;
+
+            do
+            {
+                FileBox = new FolderBrowserDialog();
+
+                FileBox.Description = "Select a location where you would like to install Tequila; preferably under My Documents or Application Data. Do not use a folder under Program Files unless you have Windows User Account Control disabled.";
+                FileBox.SelectedPath = Settings.GamePath;
+
+                if (FileBox.ShowDialog(this) == System.Windows.Forms.DialogResult.Cancel)
+                {
+                    return;
+                }
+
+                myPath = FileBox.SelectedPath;
+                PathValid = true;
+
+            } while (!PathValid);
+
+            Settings.GamePath = myPath;
+        }
+
+        private void btnAddManifest_Click(object sender, EventArgs e)
+        {
+            List<string> Manifests = (List<string>)lbManifests.DataSource;
+
+            // Make sure this is not a duplicate manifest       //
+            foreach (string manifest in Manifests) {
+                if (manifest.Equals(txtNewManifest.Text.Trim(),StringComparison.CurrentCultureIgnoreCase)) {
+                    txtNewManifest.Text = "";
+                    return;
+                }
+            }
+
+            // Not a dup? keep going                            //
+            Manifests.Add(txtNewManifest.Text);
+            Settings.Manifests = Manifests;
+            lbManifests.DataSource = Settings.Manifests;
+            txtNewManifest.Text = "";
+
+            // Attempt to re-select the last used manifest      //
+            try {
+                for (int i = 0; i < Manifests.Count; i++) {
+                    if (Manifests[i] == Settings.LastManifest) {
+                        lbManifests.SelectedIndex = i;
+                    }
+                }
+            } catch (Exception ex) { }
+        }
+
+        private void DeleteSelectedManifest()
+        {
+            List<string> Manifests = (List<string>)lbManifests.DataSource;
+            int SelectedIndex = lbManifests.SelectedIndex;
+            Manifests.RemoveAt(lbManifests.SelectedIndex);
+            Settings.Manifests = Manifests;
+            lbManifests.DataSource = Settings.Manifests;
+            try {
+                lbManifests.SelectedIndex = SelectedIndex - 1;
+            } catch (Exception ex){
+                lbManifests.SelectedIndex = 0;
+            }
+        }
+
+        private void lbManifests_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete)
+            {
+                DeleteSelectedManifest();
+            }
         }
 
     }

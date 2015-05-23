@@ -48,10 +48,10 @@ class MyToolkit
     /// <returns>False if we cant write to the path.</returns>
     public static bool InstallDirSafe(string path) {
         try {
-            File.Move(Path.Combine(path, "icon.exe"), Path.Combine(path, "icon_rename.exe"));
-            if (File.Exists(Path.Combine(path, "icon_rename.exe")))
+            File.Move(Path.Combine(path, "Tequila.exe"), Path.Combine(path, "Tequila_rename.exe"));
+            if (File.Exists(Path.Combine(path, "Tequila_rename.exe")))
             {
-                File.Move(Path.Combine(path, "icon_rename.exe"), Path.Combine(path, "icon.exe"));
+                File.Move(Path.Combine(path, "Tequila_rename.exe"), Path.Combine(path, "Tequila.exe"));
                 return true;
             } else {
                 return false;

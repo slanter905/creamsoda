@@ -13,18 +13,6 @@ namespace Tequila
 
         public static bool SetupNeeded {
             get {
-            }
-        }
-
-        public static string MainRepo
-        {
-            get
-            {
-                return TequilaRegistry.GetValue("MainRepo", "").ToString();
-            }
-            set
-            {
-                TequilaRegistry.SetValue("MainRepo", value);
                 return GamePath == "" || !File.Exists(Path.Combine(GamePath, "icon.exe"));
             }
         }
@@ -100,19 +88,35 @@ namespace Tequila
             }
         }
 
-
-        public static int DefaultProfile
+        public static List<string> Manifests
         {
             get
             {
-                int indx;
-                bool success = int.TryParse(TequilaRegistry.GetValue("DefaultProfile", -1).ToString(), out indx);
-                if (success) return indx;
-                else return 0;
+                char[] splitChars = {'\n'};
+                return TequilaRegistry.GetValue("Manifests", "").ToString().Split(splitChars, StringSplitOptions.RemoveEmptyEntries).ToList<string>();
             }
             set
             {
-                TequilaRegistry.SetValue("DefaultProfile", value);
+                string strManifests = "";
+                foreach (string Manifest in value)
+                {
+                    strManifests += Manifest.Trim() + "\n";
+                }
+
+                if (strManifests.EndsWith("\n")) strManifests = strManifests.Substring(0, strManifests.Length - 1);
+                TequilaRegistry.SetValue("Manifests", strManifests);
+            }
+        }
+
+        public static string LastManifest
+        {
+            get
+            {
+                return TequilaRegistry.GetValue("LastManifest", "").ToString();
+            }
+            set
+            {
+                TequilaRegistry.SetValue("LastManifest", value);
             }
         }
 
@@ -147,6 +151,7 @@ namespace Tequila
             }
             catch (Exception ex) { }
         }
+
 
 
     }

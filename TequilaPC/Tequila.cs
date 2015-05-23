@@ -25,7 +25,7 @@ namespace Tequila
         private bool NoMove = false;
         private bool DevMode = false;
         
-        string ManifestURL = "http://dl.dropboxusercontent.com/u/37952257/Tequila/titanicon.xml";
+        string ManifestURL = "";
 
         public Tequila()
         {
@@ -43,8 +43,8 @@ namespace Tequila
                     do {
                         FileBox = new FolderBrowserDialog();
                     
-                        FileBox.Description = "Select the game directory";
-                        FileBox.SelectedPath = @"C:\Program Files (x86)\CohBeta";
+                        FileBox.Description = "Select a location where you would like to install Tequila; preferably under My Documents or Application Data. Do not use a folder under Program Files unless you have Windows User Account Control disabled.";
+                        FileBox.SelectedPath = Application.StartupPath;
 
                         if (FileBox.ShowDialog(this) == System.Windows.Forms.DialogResult.Cancel) {
                             MessageBox.Show("You must select a valid install directory to continue. \nLauncher will now quit. Relaunch the laucher once you have a valid installation path.");
@@ -52,49 +52,21 @@ namespace Tequila
                             return false;
                         }
 
-                        myPath = FileBox.SelectedPath; // FileName.Substring(0, FileBox.FileName.LastIndexOf("\\") + 1);
+                        myPath = FileBox.SelectedPath;
+                        PathValid = true;
 
-                        if (File.Exists(Path.Combine(myPath, "icon.exe")))
-                        {
-                            PathValid = true;
-                        } else {
-                            PathValid = false;
-                            MessageBox.Show("The selected directory does not contain a full game installation.\r\nPlease make sure you select a directory that is not missing any files.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        }
                     } while (!PathValid);
-
-                    if (!MyToolkit.InstallDirSafe(myPath)) {
-                        string warning = "The game files will be copied to AppData\\TitanIcon; click OK to continue, Cancel to relocate the folder yourself and relaunch Tequila";
-                        if (MessageBox.Show(warning, "test", MessageBoxButtons.OKCancel) == System.Windows.Forms.DialogResult.Cancel) {
-                            Application.Exit();
-                            return false;
-                        }
-
-                        string DestPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-                        DestPath = Path.Combine(DestPath, "TitanIcon");
-
-                        myCopyObj = new DirCopy(myPath, DestPath);
-                        myPath = DestPath;
-                        myCopyDirThread = new Thread(new ThreadStart(myCopyObj.DirectoryCopy));
-                        myCopyDirThread.Start();
-                    }
 
                     Settings.GamePath = myPath;
                 }
 
                 SelfRelocate();
-                ConsolidateVirtualStore();
-
-
-                Settings.MainRepo = ManifestURL;
-
                 return true;
 
             } catch (Exception ex) {
                 MyToolkit.ErrorReporter(ex, this.Name + ".Setup");
                 return false;
             }
-
         }
 
         private void SelfRelocate() {
@@ -167,9 +139,12 @@ namespace Tequila
             BackColor = Settings.BGColor;
             label1.ForeColor = Settings.TextColor;
             lblStatus.ForeColor = Settings.TextColor;
+            lblManifest.ForeColor = Settings.TextColor;
+            lblManifest.BackColor = Settings.BGColor;
             listBox1.BackColor = Settings.BGColor;
             listBox1.ForeColor = Settings.TextColor;
         }
+
 
         private void ScanParameters() {
             for (int i = 0; i < MyToolkit.args.Length; i++)
@@ -215,7 +190,31 @@ namespace Tequila
                         }
                         else
                         {
-                            ManifestURL = MyToolkit.args[1];
+                            ManifestURL = MyToolkit.args[i + 1];
+
+                            // Get a list of currently registered manifests                                 //
+                            List<string> Manifests = Settings.Manifests;
+
+                            // Find out if this manifest is already in the list                             //
+                            bool ManifestExists = false;
+                            foreach (string Manifest in Manifests)
+                            {
+                                if (Manifest.Equals(ManifestURL, StringComparison.CurrentCultureIgnoreCase))
+                                {
+                                    ManifestExists = true;
+                                    break;
+                                }
+                            }
+
+                            // If manifest is not in the list, add it                                       //
+                            if (!ManifestExists) {
+                                Manifests.Add(ManifestURL);
+                                Settings.Manifests = Manifests;
+                            }
+
+                            // Make this the default manifest                                               //
+                            Settings.LastManifest = ManifestURL;
+
                         }
                     }
                 }
@@ -250,31 +249,71 @@ namespace Tequila
             } catch (Exception ex) { }
         }
 
+
+        protected bool loaded = false;
         private void Form_Load(object sender, EventArgs e)
         {
             try
             {
+                // Attempt to kill any other version of the patcher //
+                // that may be running                              //
                 ProcessKiller();
-                
+
+
                 this.Text += " " + Application.ProductVersion;
                 Skin();
 
                 ScanParameters();
 
+                LoadManifestList();
+
                 timer1.Enabled = Setup();
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 MyToolkit.ErrorReporter(ex, this.Name + ".Form_Load");
             }
+
+            loaded = true;
+    
+        }
+
+
+        public void LoadManifestList() {
+            loaded = false;
+            // Load the list of stored manifests                //
+            List<string> Manifests = Settings.Manifests;
+
+            if (Manifests.Count == 0) {
+                Manifests.Add("http://dl.dropboxusercontent.com/u/37952257/Tequila/titanicon.xml");
+                Settings.Manifests = Manifests;
+            }
+        
+            cbManifest.DataSource = Manifests;
+            ManifestURL = Manifests[0];
+
+            // Attempt to re-select the last used manifest      //
+            for (int i = 0; i < Manifests.Count; i++)
+            {
+                if (Manifests[i] == Settings.LastManifest)
+                {
+                    cbManifest.SelectedIndex = i;
+                    ManifestURL = Settings.LastManifest;
+                    break;
+                }
+            }
+            loaded = true;
         }
 
         private void StartUp() {
             try
             {
                 string PathRoot = Settings.GamePath;
-                string LocalManifest = PathRoot + @"rspatcher.xml";
+                string LocalManifest = PathRoot + @"tequila.xml";
 
                 btnPlay.Text = "...";
                 btnPlay.Enabled = false;
+                cbManifest.Enabled = false;
 
                 myWorker = new WorkThread(ManifestURL);
                 myWorker.LocalManifest = LocalManifest;
@@ -297,12 +336,14 @@ namespace Tequila
                     pnlErrors.Visible = true;
                 } else {
                     btnPlay.Enabled = true;
-                    btnPlay.Text = "Play"; 
+                    cbManifest.Enabled = true;
+                    btnPlay.Text = "Play";
                 }
             } catch (Exception ex) {
                 MyToolkit.ErrorReporter(ex, this.Name + ".Finish");
             }
         }
+
 
         private void timer_Tick(object sender, EventArgs e)
         {
@@ -323,8 +364,14 @@ namespace Tequila
                     return;
                 }
 
+                if (myWorker.ForumURL != "" && myWorker.ForumURL != webBrowser1.Url.AbsoluteUri && !webBrowser1.IsBusy)
+                {
+                    webBrowser1.Navigate(myWorker.ForumURL);
+                }
+
                 if (myWorker.Manifest != null)
 
+                    
                     if (listBox1.Items.Count <= 1)
                     {
                         IEnumerable<XElement> Profiles = myWorker.Manifest.Descendants("launch");
@@ -350,16 +397,7 @@ namespace Tequila
 
                         listBox1.DisplayMember = "Text";
                         listBox1.DataSource = items;
-
-                        try
-                        {
-                            int i = Settings.DefaultProfile;
-                            if (i < listBox1.Items.Count && i >= 0) listBox1.SelectedIndex = i;
-                        }
-                        catch (Exception ex)
-                        {
-                            listBox1.SelectedIndex = 0;
-                        }
+                        listBox1.SelectedIndex = 0;
                     }
 
                 Progress.Value = MyToolkit.MinMax(myWorker.CurProgress, 0, 100);
@@ -380,12 +418,9 @@ namespace Tequila
                 startInfo.Arguments = ((LaunchProfile)listBox1.SelectedItem).Params;
                 startInfo.Arguments += " " + Settings.GameParams;
 
-                Settings.DefaultProfile = listBox1.SelectedIndex;
-
                 Process.Start(startInfo);
                 if (Settings.QuitOnLaunch) Application.Exit();
-
-
+                
             } catch (Exception ex) {
                 MyToolkit.ErrorReporter(ex, this.Name + ".btnPlay_Click");
             }
@@ -420,18 +455,30 @@ namespace Tequila
             prefs.ShowDialog(this);
             Skin();
 
-            if (prefs.ReValidate)
-            {
-                try
-                {
-                    File.Delete(Path.Combine(Settings.GamePath, "tequilalog.xml"));
-                    timer1.Enabled = Setup();
-                    StartUp();
-                }
-                catch (Exception ex)
-                {
-                    MyToolkit.ErrorReporter(ex, this.Name + ".Form_Load");
-                }
+            LoadManifestList();
+
+            if (prefs.ReValidate) {
+                ReValidate();
+            }
+        }
+
+        private void ReValidate() {
+            try {
+                listBox1.DataSource = null;
+                File.Delete(Path.Combine(Settings.GamePath, "tequilalog.xml"));
+                timer1.Enabled = Setup();
+                StartUp();
+            } catch (Exception ex) {
+                MyToolkit.ErrorReporter(ex, this.Name + ".Form_Load");
+            }
+        }
+
+        private void cbManifest_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (loaded) {
+                Settings.LastManifest = cbManifest.SelectedItem.ToString();
+                ManifestURL = Settings.LastManifest;
+                ReValidate();
             }
         }
 

@@ -33,6 +33,7 @@ namespace Tequila
 
             public string LocalManifest = "";
             public string PathRoot = "";
+            public string ForumURL = "";
             public string ManifestURL; 
 
             private XElement Log;
@@ -258,81 +259,45 @@ namespace Tequila
 
                 HTTP client = new HTTP();
 
-                bool keepTrying = true;
-                string DownloadURL = file.DownloadURL;;
+                if (client.StartDownload(new AsyncCompletedEventHandler(DownloadFileComplete),
+                                     new DownloadProgressChangedEventHandler(dlProgress),
+                                     file.DownloadURL,
+                                     file.FullName + ".download")){
+                    m_Status = "Downloading";
+                    m_DownloadActive = true;
+                }
 
-                while (keepTrying)
-                {
-                    try
+                m_current = file.FullName;
+                
+                while (m_DownloadActive) {
+                    if (Kill)
                     {
-                        if (client.StartDownload(new AsyncCompletedEventHandler(DownloadFileComplete),
-                                             new DownloadProgressChangedEventHandler(dlProgress),
-                                             DownloadURL,
-                                             file.FullName + ".download"))
-                        {
-                            m_Status = "Downloading";
-                            m_DownloadActive = true;
-                        }
+                        client.CancelDownload();
+                        return;
                     }
-                    catch (Exception ex) {
+                    System.Threading.Thread.Sleep(10);
+                }
 
-                        string er = ex.Message;
-                    
-                    }
+                Fingerprint Downloaded = new Fingerprint(file.RootPath, file.FileName + ".download");
 
-                    m_current = file.FullName;
+                if (!Downloaded.Equals(file)) {
+                    File.Delete(file.FullName + ".download");
+                    string Msg = "Download error: " + file.FileName;
 
-                    while (client.Active)
+                    if (Downloaded.Size != file.Size) Msg += "\r\nSize mismatch (" + Downloaded.Size + " vs " + file.Size + ")";
+                    if (Downloaded.Checksum != file.Checksum) Msg += "\r\nChecksum Mismatch (" + Downloaded.Checksum + " vs " + file.Checksum + ")";
+
+                    if (file.Warn) m_ErrorLog.Add(Msg);
+                    else m_WarningLog.Add(Msg);
+                } else {
+                    if (File.Exists(file.FullName))
                     {
-                        if (Kill)
-                        {
-                            client.CancelDownload();
-                            return;
-                        }
-                        System.Threading.Thread.Sleep(10);
+                        File.SetAttributes(file.FullName, File.GetAttributes(file.FullName) & ~FileAttributes.ReadOnly);
+                        File.Delete(file.FullName);
                     }
 
-                    Fingerprint Downloaded = new Fingerprint(file.RootPath, file.FileName + ".download");
-
-                    if (!Downloaded.Equals(file))
-                    {
-                        // OK this file is no good, delete it.                  
-                        File.Delete(file.FullName + ".download");
-                        
-                        // lets try a different url...                          
-                        DownloadURL = file.DownloadURL;
-
-                        // Did we get a blank URL?                              
-                        if (DownloadURL == "")
-                        {
-                            // OK stop trying and report error...               
-                            keepTrying = false;
-
-                            string Msg = "Download error: " + file.FileName;
-                            if (Downloaded.Size == 0) Msg += "\r\nWas unable to download file";
-                            else
-                            {
-                                if (Downloaded.Size != file.Size) Msg += "\r\nSize mismatch (" + Downloaded.Size + " vs " + file.Size + ")";
-                                if (Downloaded.Checksum != file.Checksum) Msg += "\r\nChecksum Mismatch (" + Downloaded.Checksum + " vs " + file.Checksum + ")";
-                            }
-                            if (file.Warn) m_ErrorLog.Add(Msg);
-                            else m_WarningLog.Add(Msg);
-                        }
-                    }
-                    else
-                    {
-                        if (File.Exists(file.FullName))
-                        {
-                            File.SetAttributes(file.FullName, File.GetAttributes(file.FullName) & ~FileAttributes.ReadOnly);
-                            File.Delete(file.FullName);
-                        }
-
-                        // We are done, we dont need to keep trying (infinite loop if we dont set this)
-                        keepTrying = false;
-                        File.Move(file.FullName + ".download", file.FullName);
-                        FlagVerified(file.FullName, file.Size, file.Checksum);
-                    }
-
+                    File.Move(file.FullName + ".download", file.FullName);
+                    FlagVerified(file.FullName, file.Size, file.Checksum);
                 }
 
                 m_Downloaded += file.Size;
@@ -362,7 +327,7 @@ namespace Tequila
             }
 
             m_Status = "Fetching manifest...";
-            LocalManifest = MyToolkit.ValidPath(Path.Combine(PathRoot, "rspatcher.xml"));
+            LocalManifest = MyToolkit.ValidPath(Path.Combine(PathRoot, "tequila.xml"));
             client.StartDownload(new AsyncCompletedEventHandler(ManifestDownloadComplete),
                                 new DownloadProgressChangedEventHandler(dlProgress),
                                 ManifestURL,
@@ -402,6 +367,18 @@ namespace Tequila
             try
             {
                 m_manifest = XElement.Load(LocalManifest);
+
+
+                // try to get the forum URL                                                         
+
+                IEnumerable<XElement> forumLinks = m_manifest.Descendants("webpage");
+
+                foreach (XElement forumLink in forumLinks)
+                {
+                    ForumURL = forumLink.Value;
+                    break;
+                }
+
 
                 SelfPatch();
                 

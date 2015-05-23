@@ -30,28 +30,12 @@ public class Fingerprint
     public string Checksum { get { return m_Checksum; } }
     public bool Mismatch { get { return m_mismatch; } set { m_mismatch = value; } }
     public bool Warn { get { return m_warn; } set { m_warn = Warn; } }
-
-
-    private int URLRandomIndex = -1;
-    private int URLOffset = 0;
-
     public string DownloadURL { 
         get {
-
-            if (m_DownloadURLs.Count >= 1 && URLOffset < m_DownloadURLs.Count)
+            if (m_DownloadURLs.Count >= 1)
             {
-                if(URLRandomIndex == -1) URLRandomIndex = rand.Next(0, m_DownloadURLs.Count);
-
-                
-                string returnURL = m_DownloadURLs[(URLRandomIndex + URLOffset) % m_DownloadURLs.Count].ToString();
-                
-                // Increasing this offset, if we are called again, we will use this new offset
-                URLOffset++;
-
-
-                return returnURL;
-
-
+                int randomIndex = rand.Next(0, m_DownloadURLs.Count);
+                return m_DownloadURLs[randomIndex].ToString();
             } else {
                 return "";
             }

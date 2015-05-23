@@ -41,6 +41,8 @@
             this.webBrowser1 = new System.Windows.Forms.WebBrowser();
             this.btnScreenshots = new System.Windows.Forms.Button();
             this.btnOptions = new System.Windows.Forms.Button();
+            this.cbManifest = new System.Windows.Forms.ComboBox();
+            this.lblManifest = new System.Windows.Forms.Label();
             this.pnlErrors.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -51,9 +53,9 @@
             this.lblStatus.BackColor = System.Drawing.Color.Transparent;
             this.lblStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel, ((byte)(0)));
             this.lblStatus.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.lblStatus.Location = new System.Drawing.Point(12, 423);
+            this.lblStatus.Location = new System.Drawing.Point(12, 421);
             this.lblStatus.Name = "lblStatus";
-            this.lblStatus.Size = new System.Drawing.Size(806, 23);
+            this.lblStatus.Size = new System.Drawing.Size(794, 23);
             this.lblStatus.TabIndex = 0;
             this.lblStatus.Text = "test";
             this.lblStatus.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -62,9 +64,9 @@
             // 
             this.Progress.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.Progress.Location = new System.Drawing.Point(12, 391);
+            this.Progress.Location = new System.Drawing.Point(12, 395);
             this.Progress.Name = "Progress";
-            this.Progress.Size = new System.Drawing.Size(806, 23);
+            this.Progress.Size = new System.Drawing.Size(794, 23);
             this.Progress.TabIndex = 1;
             // 
             // txtErrors
@@ -75,7 +77,7 @@
             this.txtErrors.Location = new System.Drawing.Point(3, 35);
             this.txtErrors.Multiline = true;
             this.txtErrors.Name = "txtErrors";
-            this.txtErrors.Size = new System.Drawing.Size(556, 335);
+            this.txtErrors.Size = new System.Drawing.Size(547, 339);
             this.txtErrors.TabIndex = 2;
             // 
             // pnlErrors
@@ -88,7 +90,7 @@
             this.pnlErrors.Controls.Add(this.txtErrors);
             this.pnlErrors.Location = new System.Drawing.Point(256, 12);
             this.pnlErrors.Name = "pnlErrors";
-            this.pnlErrors.Size = new System.Drawing.Size(562, 373);
+            this.pnlErrors.Size = new System.Drawing.Size(566, 377);
             this.pnlErrors.TabIndex = 3;
             this.pnlErrors.Visible = false;
             // 
@@ -108,7 +110,7 @@
             this.btnPlay.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnPlay.Enabled = false;
             this.btnPlay.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel, ((byte)(0)));
-            this.btnPlay.Location = new System.Drawing.Point(12, 301);
+            this.btnPlay.Location = new System.Drawing.Point(12, 305);
             this.btnPlay.Name = "btnPlay";
             this.btnPlay.Size = new System.Drawing.Size(238, 41);
             this.btnPlay.TabIndex = 4;
@@ -128,9 +130,8 @@
             this.listBox1.ItemHeight = 25;
             this.listBox1.Location = new System.Drawing.Point(12, 15);
             this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(238, 275);
+            this.listBox1.Size = new System.Drawing.Size(238, 225);
             this.listBox1.TabIndex = 5;
-            this.listBox1.DoubleClick += new System.EventHandler(this.btnPlay_Click);
             // 
             // timer1
             // 
@@ -145,12 +146,13 @@
             this.webBrowser1.Location = new System.Drawing.Point(259, 15);
             this.webBrowser1.MinimumSize = new System.Drawing.Size(20, 20);
             this.webBrowser1.Name = "webBrowser1";
-            this.webBrowser1.Size = new System.Drawing.Size(559, 370);
+            this.webBrowser1.Size = new System.Drawing.Size(547, 374);
             this.webBrowser1.TabIndex = 6;
-            this.webBrowser1.Url = new System.Uri("http://github.com/leandrotlz/Tequila", System.UriKind.Absolute);
+            this.webBrowser1.Url = new System.Uri("", System.UriKind.Relative);
             // 
             // btnScreenshots
             // 
+            this.btnScreenshots.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnScreenshots.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel, ((byte)(0)));
             this.btnScreenshots.Location = new System.Drawing.Point(12, 348);
             this.btnScreenshots.Name = "btnScreenshots";
@@ -162,6 +164,7 @@
             // 
             // btnOptions
             // 
+            this.btnOptions.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnOptions.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel, ((byte)(0)));
             this.btnOptions.Location = new System.Drawing.Point(132, 348);
             this.btnOptions.Name = "btnOptions";
@@ -171,12 +174,37 @@
             this.btnOptions.UseVisualStyleBackColor = true;
             this.btnOptions.Click += new System.EventHandler(this.button1_Click);
             // 
+            // cbManifest
+            // 
+            this.cbManifest.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.cbManifest.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbManifest.FormattingEnabled = true;
+            this.cbManifest.Location = new System.Drawing.Point(12, 271);
+            this.cbManifest.Name = "cbManifest";
+            this.cbManifest.Size = new System.Drawing.Size(238, 21);
+            this.cbManifest.TabIndex = 10;
+            this.cbManifest.SelectedIndexChanged += new System.EventHandler(this.cbManifest_SelectedIndexChanged);
+            // 
+            // lblManifest
+            // 
+            this.lblManifest.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblManifest.AutoSize = true;
+            this.lblManifest.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
+            this.lblManifest.ForeColor = System.Drawing.Color.White;
+            this.lblManifest.Location = new System.Drawing.Point(7, 243);
+            this.lblManifest.Name = "lblManifest";
+            this.lblManifest.Size = new System.Drawing.Size(160, 25);
+            this.lblManifest.TabIndex = 11;
+            this.lblManifest.Text = "Active Manifest";
+            // 
             // Tequila
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(57)))), ((int)(((byte)(94)))), ((int)(((byte)(112)))));
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.ClientSize = new System.Drawing.Size(824, 455);
+            this.ClientSize = new System.Drawing.Size(818, 448);
+            this.Controls.Add(this.lblManifest);
+            this.Controls.Add(this.cbManifest);
             this.Controls.Add(this.btnOptions);
             this.Controls.Add(this.btnScreenshots);
             this.Controls.Add(this.btnPlay);
@@ -186,9 +214,7 @@
             this.Controls.Add(this.Progress);
             this.Controls.Add(this.lblStatus);
             this.DoubleBuffered = true;
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MaximumSize = new System.Drawing.Size(834, 487);
             this.MinimumSize = new System.Drawing.Size(834, 487);
             this.Name = "Tequila";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -198,6 +224,7 @@
             this.pnlErrors.ResumeLayout(false);
             this.pnlErrors.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -214,6 +241,8 @@
         private System.Windows.Forms.WebBrowser webBrowser1;
         private System.Windows.Forms.Button btnScreenshots;
         private System.Windows.Forms.Button btnOptions;
+        private System.Windows.Forms.ComboBox cbManifest;
+        private System.Windows.Forms.Label lblManifest;
 
     }
 }
