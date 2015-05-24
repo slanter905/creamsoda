@@ -449,7 +449,8 @@ namespace Tequila
 
         private void cbManifest_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (loaded) {
+            if (loaded && Settings.LastManifest != cbManifest.SelectedItem.ToString())
+            {
                 Settings.LastManifest = cbManifest.SelectedItem.ToString();
                 ManifestURL = Settings.LastManifest;
                 ReValidate();
