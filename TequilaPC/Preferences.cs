@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.IO;
 
 namespace Tequila
 {
@@ -106,6 +107,8 @@ namespace Tequila
 
             } while (!PathValid);
 
+            SelfRelocate();
+
             Settings.GamePath = myPath;
         }
 
@@ -156,6 +159,43 @@ namespace Tequila
             if (e.KeyCode == Keys.Delete)
             {
                 DeleteSelectedManifest();
+            }
+        }
+
+        private void SelfRelocate()
+        {
+            try {
+                if (Application.StartupPath == Settings.GamePath) return;
+                if (!File.Exists(Application.ExecutablePath)) return;
+
+                string ShortcutPath = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+                string ShortcutTarget = Path.Combine(Settings.GamePath, "Tequila.exe");
+
+                if (!Directory.Exists(Settings.GamePath))
+                    Directory.CreateDirectory(Settings.GamePath);
+
+                try {
+                    if (File.Exists(ShortcutTarget)) File.Delete(ShortcutTarget);
+                    File.Move(Application.ExecutablePath, ShortcutTarget);
+                } catch (Exception ex) {
+                    File.Copy(Application.ExecutablePath, ShortcutTarget);
+                    try { File.Move(Application.ExecutablePath, Path.Combine(Application.StartupPath, "deleteme.txt")); }
+                    catch (Exception ex2) { }
+                }
+
+                try {
+                    using (ShellLink shortcut = new ShellLink()) {
+                        shortcut.Target = ShortcutTarget;
+                        //shortcut.WorkingDirectory = Path.GetDirectoryName(ShortcutTarget);
+                        shortcut.Description = "Drink up!";
+                        shortcut.DisplayMode = ShellLink.LinkDisplayMode.edmNormal;
+                        shortcut.Save(Path.Combine(ShortcutPath, "Tequila.lnk"));
+                    }
+                } catch (Exception ex) {
+                    MessageBox.Show(ex.Message);
+                }
+            } catch (Exception ex) {
+                MyToolkit.ErrorReporter(ex, this.Name + ".SelfRelocate");
             }
         }
 

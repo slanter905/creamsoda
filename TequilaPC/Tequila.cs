@@ -165,6 +165,8 @@ namespace Tequila
                 // Check for parameters overriding self patching                                    
                 else if (MyToolkit.args[i].Trim() == "-md5")
                 {
+                    NoMove = true;
+                    WorkThread.DontSelfUpdate = true;
                     WorkThread.GenerageChecksumToClipboard = true;
                 }
                 // Check for parameters disabling self relocate (this option also makes it not self patch) 
