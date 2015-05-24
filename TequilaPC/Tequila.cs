@@ -71,39 +71,7 @@ namespace Tequila
 
         private void SelfRelocate() {
             if (NoMove) return;
-            try {
-                if (Application.StartupPath == Settings.GamePath) return;
-                if (!File.Exists(Application.ExecutablePath)) return;
-
-                string ShortcutPath = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
-                string ShortcutTarget = Path.Combine(Settings.GamePath, "Tequila.exe");
-
-                if (!Directory.Exists(Settings.GamePath))
-                    Directory.CreateDirectory(Settings.GamePath);
-            
-                try {
-                    if (File.Exists(ShortcutTarget)) File.Delete(ShortcutTarget);
-                    File.Move(Application.ExecutablePath, ShortcutTarget);
-                } catch (Exception ex) {
-                    File.Copy(Application.ExecutablePath, ShortcutTarget);
-                    try { File.Move(Application.ExecutablePath, Path.Combine(Application.StartupPath, "deleteme.txt")); } 
-                    catch (Exception ex2) { }
-                }
-
-                try {
-                    using (ShellLink shortcut = new ShellLink()) {
-                        shortcut.Target = ShortcutTarget;
-                        //shortcut.WorkingDirectory = Path.GetDirectoryName(ShortcutTarget);
-                        shortcut.Description = "Drink up!";
-                        shortcut.DisplayMode = ShellLink.LinkDisplayMode.edmNormal;
-                        shortcut.Save(Path.Combine(ShortcutPath, "Tequila.lnk"));
-                    }
-                } catch (Exception ex) {
-                    MessageBox.Show(ex.Message);
-                }
-            } catch (Exception ex) {
-                MyToolkit.ErrorReporter(ex, this.Name + ".SelfRelocate");
-            }
+            Preferences.SelfRelocate();
         }
 
         private void ConsolidateVirtualStore() {
@@ -167,7 +135,10 @@ namespace Tequila
                 {
                     NoMove = true;
                     WorkThread.DontSelfUpdate = true;
-                    WorkThread.GenerageChecksumToClipboard = true;
+                    //WorkThread.GenerageChecksumToClipboard = true;
+
+                    Fingerprint myFingerprint = new Fingerprint(Application.StartupPath, Application.ExecutablePath.Replace(Application.StartupPath + "\\", ""));
+                    Clipboard.SetText("md5=\"" + myFingerprint.Checksum + "\" size=\"" + myFingerprint.Size + "\"");
                 }
                 // Check for parameters disabling self relocate (this option also makes it not self patch) 
                 else if (MyToolkit.args[i].Trim() == "-nomove")

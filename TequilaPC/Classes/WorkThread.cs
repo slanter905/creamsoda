@@ -476,10 +476,6 @@ namespace Tequila
             {
                 Fingerprint myFingerprint = new Fingerprint(Settings.GamePath, "Tequila.exe");
 
-                if (GenerageChecksumToClipboard)
-                {
-                    Clipboard.SetText("md5=\"" + myFingerprint.Checksum + "\" size=\"" + myFingerprint.Size + "\"");
-                }
                 if (DontSelfUpdate) return;
 
                 // Before we go far... lets see if there are any old temp files hanging around and get rid of them  

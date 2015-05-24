@@ -117,9 +117,13 @@ namespace Tequila
             List<string> Manifests = (List<string>)lbManifests.DataSource;
 
             // Make sure this is not a duplicate manifest       //
-            foreach (string manifest in Manifests) {
-                if (manifest.Equals(txtNewManifest.Text.Trim(),StringComparison.CurrentCultureIgnoreCase)) {
+
+            for (int i = 0; i < Manifests.Count; i++)
+            {
+                if (Manifests[i].Equals(txtNewManifest.Text.Trim(), StringComparison.CurrentCultureIgnoreCase))
+                {
                     txtNewManifest.Text = "";
+                    lbManifests.SelectedIndex = i;
                     return;
                 }
             }
@@ -128,6 +132,7 @@ namespace Tequila
             Manifests.Add(txtNewManifest.Text);
             Settings.Manifests = Manifests;
             lbManifests.DataSource = Settings.Manifests;
+            Settings.LastManifest = txtNewManifest.Text.Trim();
             txtNewManifest.Text = "";
 
             // Attempt to re-select the last used manifest      //
@@ -162,7 +167,7 @@ namespace Tequila
             }
         }
 
-        private void SelfRelocate()
+        public static void SelfRelocate()
         {
             try {
                 if (Application.StartupPath == Settings.GamePath) return;
@@ -195,9 +200,8 @@ namespace Tequila
                     MessageBox.Show(ex.Message);
                 }
             } catch (Exception ex) {
-                MyToolkit.ErrorReporter(ex, this.Name + ".SelfRelocate");
+                MyToolkit.ErrorReporter(ex, "Preferences.SelfRelocate");
             }
         }
-
     }
 }
