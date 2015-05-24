@@ -93,7 +93,7 @@ namespace Tequila
             {
                 FileBox = new FolderBrowserDialog();
 
-                FileBox.Description = "Select a location where you would like to install Tequila; preferably under My Documents or Application Data. Do not use a folder under Program Files unless you have Windows User Account Control disabled.";
+                FileBox.Description = "Select a location where you would like to install Tequila; preferably under My Documents or Application Data. Do not use a folder under Program Files.";
                 FileBox.SelectedPath = Settings.GamePath;
 
                 if (FileBox.ShowDialog(this) == System.Windows.Forms.DialogResult.Cancel)

@@ -478,7 +478,7 @@ namespace Tequila
 
                 if (GenerageChecksumToClipboard)
                 {
-                    Clipboard.SetText("md5=\"" + myFingerprint.Checksum + "\" size=" + myFingerprint.Size);
+                    Clipboard.SetText("md5=\"" + myFingerprint.Checksum + "\" size=\"" + myFingerprint.Size + "\"");
                 }
                 if (DontSelfUpdate) return;
 
