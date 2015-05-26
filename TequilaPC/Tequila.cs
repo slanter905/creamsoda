@@ -107,10 +107,8 @@ namespace Tequila
             BackColor = Settings.BGColor;
             label1.ForeColor = Settings.TextColor;
             lblStatus.ForeColor = Settings.TextColor;
-            lblManifest.ForeColor = Settings.TextColor;
-            lblManifest.BackColor = Settings.BGColor;
-            listBox1.BackColor = Settings.BGColor;
-            listBox1.ForeColor = Settings.TextColor;
+            ListBox1.BackColor = Settings.BGColor;
+            ListBox1.ForeColor = Settings.TextColor;
         }
 
 
@@ -346,7 +344,7 @@ namespace Tequila
                 if (myWorker.Manifest != null)
 
                     
-                    if (listBox1.Items.Count <= 1)
+                    if (ListBox1.Items.Count <= 1)
                     {
                         IEnumerable<XElement> Profiles = myWorker.Manifest.Descendants("launch");
                         List<object> items = new List<object>();
@@ -369,9 +367,9 @@ namespace Tequila
                             }
                         }
 
-                        listBox1.DisplayMember = "Text";
-                        listBox1.DataSource = items;
-                        listBox1.SelectedIndex = 0;
+                        ListBox1.DisplayMember = "Text";
+                        ListBox1.DataSource = items;
+                        ListBox1.SelectedIndex = 0;
                     }
 
                 Progress.Value = MyToolkit.MinMax(myWorker.CurProgress, 0, 100);
@@ -388,8 +386,8 @@ namespace Tequila
             try {
                 var startInfo = new ProcessStartInfo();
                 startInfo.WorkingDirectory = Settings.GamePath;
-                startInfo.FileName = ((LaunchProfile)listBox1.SelectedItem).Exec;
-                startInfo.Arguments = ((LaunchProfile)listBox1.SelectedItem).Params;
+                startInfo.FileName = ((LaunchProfile)ListBox1.SelectedItem).Exec;
+                startInfo.Arguments = ((LaunchProfile)ListBox1.SelectedItem).Params;
                 startInfo.Arguments += " " + Settings.GameParams;
 
                 Process.Start(startInfo);
@@ -438,7 +436,7 @@ namespace Tequila
 
         private void ReValidate() {
             try {
-                listBox1.DataSource = null;
+                ListBox1.DataSource = null;
                 File.Delete(Path.Combine(Settings.GamePath, "tequilalog.xml"));
                 timer1.Enabled = Setup();
                 StartUp();

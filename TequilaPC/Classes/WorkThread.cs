@@ -362,7 +362,7 @@ namespace Tequila
                 ManifestDownloadComplete(null, null);
             }
 
-            m_Status = "Fetching manifest...";
+            m_Status = "Fetching manifest";
             LocalManifest = MyToolkit.ValidPath(Path.Combine(PathRoot, "tequila.xml"));
             client.StartDownload(new AsyncCompletedEventHandler(ManifestDownloadComplete),
                                 new DownloadProgressChangedEventHandler(dlProgress),
@@ -418,7 +418,7 @@ namespace Tequila
 
                 SelfPatch();
                 
-                m_Status = "Reading Manifest";
+                m_Status = "Reading manifest";
                 IEnumerable<XElement> files = m_manifest.Descendants("file");
                     
                 foreach (XElement file in files)
@@ -488,7 +488,7 @@ namespace Tequila
 
                 // OK now thats out of the way, lets determine if we need to self patch or not!!                    
                 IEnumerable<XElement> launchers = m_manifest.Descendants("launcher");
-                m_Status = "Self Patching";
+                m_Status = "Self patching";
                 foreach (XElement launcher in launchers)
                 {
                     if (launcher.Attribute("id").Value == "tequila")
