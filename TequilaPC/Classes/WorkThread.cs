@@ -261,11 +261,12 @@ namespace Tequila
 
                 bool keepTrying = true;
                 string DownloadURL = file.DownloadURL;;
-
+                
                 while (keepTrying)
                 {
                     try
                     {
+                        MyToolkit.ActivityLog("Downloading file \"" + file.FullName + "\" from \"" + DownloadURL + "\"" );
                         if (client.StartDownload(new AsyncCompletedEventHandler(DownloadFileComplete),
                                              new DownloadProgressChangedEventHandler(dlProgress),
                                              DownloadURL,
@@ -306,6 +307,8 @@ namespace Tequila
                         // Did we get a blank URL?                              
                         if (DownloadURL == "")
                         {
+                            MyToolkit.ActivityLog("Download failed, no more URL's to try from");
+
                             // OK stop trying and report error...               
                             keepTrying = false;
 
@@ -318,6 +321,10 @@ namespace Tequila
                             }
                             if (file.Warn) m_ErrorLog.Add(Msg);
                             else m_WarningLog.Add(Msg);
+                        }
+                        else
+                        {
+                            MyToolkit.ActivityLog("Download failed, trying from a different URL");
                         }
                     }
                     else
@@ -362,6 +369,7 @@ namespace Tequila
                 ManifestDownloadComplete(null, null);
             }
 
+            MyToolkit.ActivityLog("Attempting to download Manifest file \"" + ManifestURL + "\"");
             m_Status = "Fetching manifest";
             LocalManifest = MyToolkit.ValidPath(Path.Combine(PathRoot, "tequila.xml"));
             client.StartDownload(new AsyncCompletedEventHandler(ManifestDownloadComplete),
@@ -374,6 +382,7 @@ namespace Tequila
         {
             // Check if we had any HTTP download errors                     
             if (e != null) if (e.Error != null) {
+                MyToolkit.ActivityLog("Manifest download error for " + ManifestURL + "\r\n" + e.Error.Message);
                 m_ErrorLog.Add("Manifest download error for " + ManifestURL +  "\r\n" + e.Error.Message);
                 m_Status = "Done";
                 return;
@@ -382,6 +391,7 @@ namespace Tequila
             // Check if the downloaded file is where it should be           
             if (!File.Exists(LocalManifest))
             {
+                MyToolkit.ActivityLog("Error downloading manifest, download complete but no file found locally.");
                 m_ErrorLog.Add("Error downloading manifest");
                 m_Status = "Done";
                 return;
@@ -390,7 +400,9 @@ namespace Tequila
             // Make certain the downloaded manifest and the one we          
             // requested match in size                                      
             FileInfo dlInfo = new FileInfo(LocalManifest);
-            if (dlInfo.Length != client.Length) {
+            if (dlInfo.Length != client.Length)
+            {
+                MyToolkit.ActivityLog("Error downloading manifest, downloaded file not the right size. Expected: " + dlInfo.Length + " received: " + client.Length);
                 m_ErrorLog.Add("Error downloading manifest");
                 m_Status = "Done";
                 return;
@@ -399,6 +411,9 @@ namespace Tequila
             // We got a manifest, lets start reading through it             
             m_current = "";
 
+
+            MyToolkit.ActivityLog("Manifest downloaded successfully, starting to process it.");
+ 
             m_ManifestFileList = new ArrayList();
             try
             {
@@ -466,6 +481,8 @@ namespace Tequila
 
         public void Cancel() {
             if (myWorkThread != null) if (myWorkThread.IsAlive) {
+                MyToolkit.ActivityLog("Patching process canceled.");
+
                 try { myWorkThread.Abort(); }
                 catch (Exception ex) { }
             }
@@ -477,6 +494,7 @@ namespace Tequila
                 Fingerprint myFingerprint = new Fingerprint(Settings.GamePath, "Tequila.exe");
 
                 if (DontSelfUpdate) return;
+                MyToolkit.ActivityLog("Starting self-patch process.");
 
                 // Before we go far... lets see if there are any old temp files hanging around and get rid of them  
 
@@ -502,6 +520,8 @@ namespace Tequila
 
                         if (!myFingerprint.Equals(remoteLauncher))
                         {
+                            MyToolkit.ActivityLog("Patcher out of date...");
+
                             // We need to update!!! yay...                                          
                             IEnumerable<XElement> urls = launcher.Descendants("url");
 
@@ -514,9 +534,11 @@ namespace Tequila
                             HTTP selfPatcherClient = new HTTP();
 
                             m_DownloadSize = remoteLauncher.Size;
+                            string downloadURL = remoteLauncher.DownloadURL;
+                            MyToolkit.ActivityLog("Downloading new version from \"" + downloadURL + "\"");
                             if (selfPatcherClient.StartDownload(new AsyncCompletedEventHandler(DownloadFileComplete),
                                                  new DownloadProgressChangedEventHandler(dlProgress),
-                                                 remoteLauncher.DownloadURL,
+                                                 downloadURL,
                                                  remoteLauncher.FullName + ".download"))
                             {
                                 m_Status = "Downloading";
@@ -526,6 +548,8 @@ namespace Tequila
                             m_current = remoteLauncher.FullName;
 
                             // Wait until download is complete                                      
+
+                            MyToolkit.ActivityLog("Waiting for patcher download to complete...");
                             while (selfPatcherClient.Active)
                             {
                                 if (Kill) {
@@ -535,6 +559,7 @@ namespace Tequila
                                 System.Threading.Thread.Sleep(10);
                             }
                             m_DownloadActive = false;
+                            MyToolkit.ActivityLog("New patcher version downloaded...");
 
                             // Make sure the downloaded file is not corrupted                       
 
@@ -547,6 +572,8 @@ namespace Tequila
                                       + "\r\n md5: " + remoteLauncher.Checksum + " vs " + downloadedFile.Checksum
                                       + "\r\n size: " + remoteLauncher.Size + " vs " + downloadedFile.Size;
 
+                                MyToolkit.ActivityLog(error);
+
                                 File.Delete(downloadedFile.FullName + ".download");
                                 m_ErrorLog.Add(error);
                                 m_Status = "Done";
@@ -554,6 +581,7 @@ namespace Tequila
                             }
                             else
                             {
+
                                 // Find an available _#.old file name                                                                   
                                 long i = 0;
                                 string TrashName = myFingerprint.FullName + "_";
@@ -567,6 +595,8 @@ namespace Tequila
                                 startInfo.FileName = myFingerprint.FullName;
                                 startInfo.Arguments = MyToolkit.AllArgs();
 
+                                MyToolkit.ActivityLog("Tequila has been patched successfuly. Restarting.");
+
                                 Process.Start(startInfo);
 
                                 Application.Exit();
@@ -575,6 +605,9 @@ namespace Tequila
                         }
                     }
                 }
+
+                MyToolkit.ActivityLog("Self patching process complete.");
+
             } catch (Exception ex) {
                 MessageBox.Show(ex.Message, "WorkThread.SelfPatch()");
             }

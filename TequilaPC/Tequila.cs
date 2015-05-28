@@ -36,6 +36,7 @@ namespace Tequila
             try {
                 if (Settings.SetupNeeded)
                 {
+                    MyToolkit.ActivityLog("Setting up Tequila");
                     string myPath = "";
                     bool PathValid = false;
                     FolderBrowserDialog FileBox;
@@ -58,6 +59,8 @@ namespace Tequila
                     } while (!PathValid);
 
                     Settings.GamePath = myPath;
+
+                    MyToolkit.ActivityLog("Tequila installed at \"" + myPath + "\"");
                 }
 
                 SelfRelocate();
@@ -111,11 +114,13 @@ namespace Tequila
             ListBox1.ForeColor = Settings.TextColor;
         }
 
-
         private void ScanParameters() {
+            
+            if(MyToolkit.AllArgs().Trim() != "") 
+                MyToolkit.ActivityLog("Launched with following parameters: " + MyToolkit.AllArgs());
+
             for (int i = 0; i < MyToolkit.args.Length; i++)
             {
-
                 // Check for parameters overriding the download of a new manifest                   
                 if (MyToolkit.args[i].Trim() == "-o")
                 {
@@ -204,6 +209,7 @@ namespace Tequila
                 {
                     if (pr.Id != me.Id)
                     {
+                        MyToolkit.ActivityLog("Shutting down previous instance of patcher...");
                         killcount++;
                         try
                         {
@@ -224,6 +230,7 @@ namespace Tequila
         protected bool loaded = false;
         private void Form_Load(object sender, EventArgs e)
         {
+            MyToolkit.ActivityLog("Loading application.");
             try
             {
                 // Attempt to kill any other version of the patcher //
@@ -246,7 +253,8 @@ namespace Tequila
             }
 
             loaded = true;
-    
+
+            MyToolkit.ActivityLog("Load application complete.");
         }
 
 
@@ -279,6 +287,7 @@ namespace Tequila
         private void StartUp() {
             try
             {
+                MyToolkit.ActivityLog("Started patching");
                 string PathRoot = Settings.GamePath;
                 string LocalManifest = PathRoot + @"tequila.xml";
 
@@ -297,6 +306,8 @@ namespace Tequila
 
         private void Finish() {
             try{
+                MyToolkit.ActivityLog("Finished patching.");
+
                 Progress.Value = 100;
                 timer1.Enabled = false;
 
@@ -337,6 +348,7 @@ namespace Tequila
 
                 if (myWorker.ForumURL != "" && myWorker.ForumURL != webBrowser1.Tag && myWorker.ForumURL != webBrowser1.Url.AbsoluteUri && !webBrowser1.IsBusy)
                 {
+                    MyToolkit.ActivityLog("Loading Web Browser URL to: \"" + myWorker.ForumURL + "\"");
                     webBrowser1.Tag = myWorker.ForumURL;
                     webBrowser1.Navigate(myWorker.ForumURL);
                 }
@@ -384,6 +396,8 @@ namespace Tequila
         private void btnPlay_Click(object sender, EventArgs e)
         {
             try {
+                MyToolkit.ActivityLog("User clicked play with the following profile: " + ((LaunchProfile)ListBox1.SelectedItem).Text);
+
                 var startInfo = new ProcessStartInfo();
                 startInfo.WorkingDirectory = Settings.GamePath;
                 startInfo.FileName = ((LaunchProfile)ListBox1.SelectedItem).Exec;
@@ -401,6 +415,7 @@ namespace Tequila
         private void btnScreenshots_Click(object sender, EventArgs e)
         {
             try {
+                MyToolkit.ActivityLog("User clicked to open screenshots directory");
                 string screenshotDir = Path.Combine(Settings.GamePath, "screenshots");
 
                 if (!Directory.Exists(screenshotDir)) {
@@ -414,6 +429,7 @@ namespace Tequila
 
         private void Form_FormClosing(object sender, FormClosingEventArgs e)
         {
+            MyToolkit.ActivityLog("Application quitting");
             WorkThread.Kill = true;
             DirCopy.Kill = true;
 
@@ -422,6 +438,7 @@ namespace Tequila
 
         private void button1_Click(object sender, EventArgs e)
         {
+            MyToolkit.ActivityLog("User clicked to open Options window");
             Preferences prefs = new Preferences();
             prefs.btnRevalidate.Enabled = (myWorker.Status == "Done");
             prefs.ShowDialog(this);
@@ -436,6 +453,7 @@ namespace Tequila
 
         private void ReValidate() {
             try {
+                MyToolkit.ActivityLog("Revalidation process started");
                 ListBox1.DataSource = null;
                 File.Delete(Path.Combine(Settings.GamePath, "tequilalog.xml"));
                 timer1.Enabled = Setup();
@@ -449,6 +467,7 @@ namespace Tequila
         {
             if (loaded && Settings.LastManifest != cbManifest.SelectedItem.ToString())
             {
+                MyToolkit.ActivityLog("Manifest changed to \"" + cbManifest.SelectedItem.ToString() + "\"");
                 Settings.LastManifest = cbManifest.SelectedItem.ToString();
                 ManifestURL = Settings.LastManifest;
                 ReValidate();

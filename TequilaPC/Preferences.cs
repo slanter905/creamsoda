@@ -170,11 +170,14 @@ namespace Tequila
         public static void SelfRelocate()
         {
             try {
+
                 if (Application.StartupPath == Settings.GamePath) return;
                 if (!File.Exists(Application.ExecutablePath)) return;
 
                 string ShortcutPath = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
                 string ShortcutTarget = Path.Combine(Settings.GamePath, "Tequila.exe");
+
+                MyToolkit.ActivityLog("Self Relocating tequila to \"" + ShortcutTarget + "\"");
 
                 if (!Directory.Exists(Settings.GamePath))
                     Directory.CreateDirectory(Settings.GamePath);
@@ -185,7 +188,9 @@ namespace Tequila
                 } catch (Exception ex) {
                     File.Copy(Application.ExecutablePath, ShortcutTarget);
                     try { File.Move(Application.ExecutablePath, Path.Combine(Application.StartupPath, "deleteme.txt")); }
-                    catch (Exception ex2) { }
+                    catch (Exception ex2) {
+                        MyToolkit.ActivityLog("Failed to relocate Tequila to \"" + ShortcutTarget + "\"");  
+                    }
                 }
 
                 try {
@@ -197,6 +202,7 @@ namespace Tequila
                         shortcut.Save(Path.Combine(ShortcutPath, "Tequila.lnk"));
                     }
                 } catch (Exception ex) {
+                    MyToolkit.ActivityLog("Failed to create desktop shortcut \"" + ShortcutTarget + "\"");  
                     MessageBox.Show(ex.Message);
                 }
             } catch (Exception ex) {

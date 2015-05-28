@@ -70,4 +70,14 @@ class MyToolkit
         System.Windows.Forms.MessageBox.Show(ex.Message, source);
     }
 
+
+    public static void ActivityLog(string Line) {
+
+        using (StreamWriter writer = new StreamWriter(Path.Combine(Tequila.Settings.GamePath, "TequilaActivityLog.txt"), true))
+        {
+            writer.WriteLine("[" + DateTime.Now.ToString() + "]\t" + Line);
+        }
+    }
+
+
 }
