@@ -62,10 +62,10 @@
             // 
             this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOK.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnOK.Location = new System.Drawing.Point(685, 409);
+            this.btnOK.Location = new System.Drawing.Point(248, 322);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(131, 33);
-            this.btnOK.TabIndex = 0;
+            this.btnOK.TabIndex = 17;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
@@ -76,7 +76,7 @@
             this.btnColor.Location = new System.Drawing.Point(83, 11);
             this.btnColor.Name = "btnColor";
             this.btnColor.Size = new System.Drawing.Size(67, 23);
-            this.btnColor.TabIndex = 1;
+            this.btnColor.TabIndex = 9;
             this.btnColor.UseVisualStyleBackColor = false;
             this.btnColor.Click += new System.EventHandler(this.btnColor_Click);
             // 
@@ -86,7 +86,7 @@
             this.label1.Location = new System.Drawing.Point(12, 16);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(65, 13);
-            this.label1.TabIndex = 2;
+            this.label1.TabIndex = 8;
             this.label1.Text = "Background";
             // 
             // label2
@@ -95,7 +95,7 @@
             this.label2.Location = new System.Drawing.Point(6, 16);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(99, 13);
-            this.label2.TabIndex = 3;
+            this.label2.TabIndex = 1;
             this.label2.Text = "Launch Parameters";
             // 
             // txtParameters
@@ -104,18 +104,18 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtParameters.Location = new System.Drawing.Point(111, 13);
             this.txtParameters.Name = "txtParameters";
-            this.txtParameters.Size = new System.Drawing.Size(692, 20);
-            this.txtParameters.TabIndex = 4;
+            this.txtParameters.Size = new System.Drawing.Size(255, 20);
+            this.txtParameters.TabIndex = 2;
             this.txtParameters.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
             // ckbQuitOnLaunch
             // 
             this.ckbQuitOnLaunch.AutoSize = true;
-            this.ckbQuitOnLaunch.Location = new System.Drawing.Point(9, 42);
+            this.ckbQuitOnLaunch.Location = new System.Drawing.Point(113, 41);
             this.ckbQuitOnLaunch.Name = "ckbQuitOnLaunch";
-            this.ckbQuitOnLaunch.Size = new System.Drawing.Size(154, 17);
-            this.ckbQuitOnLaunch.TabIndex = 6;
-            this.ckbQuitOnLaunch.Text = "Exit launcher on game start";
+            this.ckbQuitOnLaunch.Size = new System.Drawing.Size(198, 17);
+            this.ckbQuitOnLaunch.TabIndex = 3;
+            this.ckbQuitOnLaunch.Text = "Close Tequila after starting the game";
             this.ckbQuitOnLaunch.UseVisualStyleBackColor = true;
             this.ckbQuitOnLaunch.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
             // 
@@ -125,7 +125,7 @@
             this.btnTextColor.Location = new System.Drawing.Point(190, 11);
             this.btnTextColor.Name = "btnTextColor";
             this.btnTextColor.Size = new System.Drawing.Size(67, 23);
-            this.btnTextColor.TabIndex = 7;
+            this.btnTextColor.TabIndex = 11;
             this.btnTextColor.UseVisualStyleBackColor = false;
             this.btnTextColor.Click += new System.EventHandler(this.btnTextColor_Click);
             // 
@@ -135,17 +135,17 @@
             this.label3.Location = new System.Drawing.Point(156, 16);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(28, 13);
-            this.label3.TabIndex = 8;
+            this.label3.TabIndex = 10;
             this.label3.Text = "Text";
             // 
             // btnRevalidate
             // 
             this.btnRevalidate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnRevalidate.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel, ((byte)(0)));
-            this.btnRevalidate.Location = new System.Drawing.Point(553, 409);
+            this.btnRevalidate.Location = new System.Drawing.Point(116, 322);
             this.btnRevalidate.Name = "btnRevalidate";
             this.btnRevalidate.Size = new System.Drawing.Size(129, 33);
-            this.btnRevalidate.TabIndex = 9;
+            this.btnRevalidate.TabIndex = 16;
             this.btnRevalidate.Text = "Re-Validate";
             this.btnRevalidate.UseVisualStyleBackColor = true;
             this.btnRevalidate.Click += new System.EventHandler(this.btnRevalidate_Click);
@@ -158,8 +158,8 @@
             this.lbManifests.FormattingEnabled = true;
             this.lbManifests.Location = new System.Drawing.Point(6, 46);
             this.lbManifests.Name = "lbManifests";
-            this.lbManifests.Size = new System.Drawing.Size(797, 173);
-            this.lbManifests.TabIndex = 10;
+            this.lbManifests.Size = new System.Drawing.Size(360, 82);
+            this.lbManifests.TabIndex = 15;
             this.lbManifests.KeyUp += new System.Windows.Forms.KeyEventHandler(this.lbManifests_KeyUp);
             // 
             // groupBox1
@@ -172,18 +172,18 @@
             this.groupBox1.Controls.Add(this.lbManifests);
             this.groupBox1.Location = new System.Drawing.Point(7, 178);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(809, 225);
-            this.groupBox1.TabIndex = 11;
+            this.groupBox1.Size = new System.Drawing.Size(372, 138);
+            this.groupBox1.TabIndex = 12;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Manifests";
             // 
             // btnAddManifest
             // 
             this.btnAddManifest.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnAddManifest.Location = new System.Drawing.Point(753, 16);
+            this.btnAddManifest.Location = new System.Drawing.Point(316, 16);
             this.btnAddManifest.Name = "btnAddManifest";
             this.btnAddManifest.Size = new System.Drawing.Size(50, 23);
-            this.btnAddManifest.TabIndex = 12;
+            this.btnAddManifest.TabIndex = 14;
             this.btnAddManifest.Text = "Add";
             this.btnAddManifest.UseVisualStyleBackColor = true;
             this.btnAddManifest.Click += new System.EventHandler(this.btnAddManifest_Click);
@@ -194,8 +194,8 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtNewManifest.Location = new System.Drawing.Point(6, 18);
             this.txtNewManifest.Name = "txtNewManifest";
-            this.txtNewManifest.Size = new System.Drawing.Size(741, 20);
-            this.txtNewManifest.TabIndex = 11;
+            this.txtNewManifest.Size = new System.Drawing.Size(304, 20);
+            this.txtNewManifest.TabIndex = 13;
             // 
             // groupBox2
             // 
@@ -207,8 +207,8 @@
             this.groupBox2.Controls.Add(this.label3);
             this.groupBox2.Location = new System.Drawing.Point(7, 130);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(809, 42);
-            this.groupBox2.TabIndex = 12;
+            this.groupBox2.Size = new System.Drawing.Size(372, 42);
+            this.groupBox2.TabIndex = 7;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Colors";
             // 
@@ -220,18 +220,18 @@
             this.groupBox3.Controls.Add(this.lblInstallPath);
             this.groupBox3.Location = new System.Drawing.Point(9, 78);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(807, 46);
-            this.groupBox3.TabIndex = 13;
+            this.groupBox3.Size = new System.Drawing.Size(370, 46);
+            this.groupBox3.TabIndex = 4;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Install Path";
             // 
             // btnInstallPathBrowse
             // 
             this.btnInstallPathBrowse.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnInstallPathBrowse.Location = new System.Drawing.Point(751, 11);
+            this.btnInstallPathBrowse.Location = new System.Drawing.Point(314, 15);
             this.btnInstallPathBrowse.Name = "btnInstallPathBrowse";
-            this.btnInstallPathBrowse.Size = new System.Drawing.Size(50, 32);
-            this.btnInstallPathBrowse.TabIndex = 1;
+            this.btnInstallPathBrowse.Size = new System.Drawing.Size(50, 23);
+            this.btnInstallPathBrowse.TabIndex = 6;
             this.btnInstallPathBrowse.Text = "Browse";
             this.btnInstallPathBrowse.UseVisualStyleBackColor = true;
             this.btnInstallPathBrowse.Click += new System.EventHandler(this.btnInstallPathBrowse_Click);
@@ -240,10 +240,10 @@
             // 
             this.lblInstallPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblInstallPath.Location = new System.Drawing.Point(6, 11);
+            this.lblInstallPath.Location = new System.Drawing.Point(6, 19);
             this.lblInstallPath.Name = "lblInstallPath";
-            this.lblInstallPath.Size = new System.Drawing.Size(739, 32);
-            this.lblInstallPath.TabIndex = 0;
+            this.lblInstallPath.Size = new System.Drawing.Size(302, 21);
+            this.lblInstallPath.TabIndex = 5;
             this.lblInstallPath.Text = "label4";
             // 
             // groupBox4
@@ -255,8 +255,8 @@
             this.groupBox4.Controls.Add(this.ckbQuitOnLaunch);
             this.groupBox4.Location = new System.Drawing.Point(9, 9);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(809, 63);
-            this.groupBox4.TabIndex = 14;
+            this.groupBox4.Size = new System.Drawing.Size(372, 63);
+            this.groupBox4.TabIndex = 0;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Settings";
             // 
@@ -265,7 +265,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnOK;
-            this.ClientSize = new System.Drawing.Size(821, 449);
+            this.ClientSize = new System.Drawing.Size(384, 362);
             this.ControlBox = false;
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);
@@ -276,10 +276,10 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(291, 384);
+            this.MinimumSize = new System.Drawing.Size(400, 400);
             this.Name = "Preferences";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Preferences";
+            this.Text = "Options";
             this.Load += new System.EventHandler(this.Preferences_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();

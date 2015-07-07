@@ -48,7 +48,7 @@ namespace Tequila
                         FileBox.SelectedPath = Application.StartupPath;
 
                         if (FileBox.ShowDialog(this) == System.Windows.Forms.DialogResult.Cancel) {
-                            MessageBox.Show("You must select a valid install directory to continue. \nLauncher will now quit. Relaunch the laucher once you have a valid installation path.");
+                            MessageBox.Show("You must select a valid install directory to continue.\nTequila will now quit. Restart Tequila once you have a valid installation path.");
                             Application.Exit();
                             return false;
                         }
@@ -75,34 +75,6 @@ namespace Tequila
         private void SelfRelocate() {
             if (NoMove) return;
             Preferences.SelfRelocate();
-        }
-
-        private void ConsolidateVirtualStore() {
-            try {
-                if (!Directory.Exists(Settings.GamePath))
-                    Directory.CreateDirectory(Settings.GamePath);
-            
-                string localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-
-                if (Settings.GamePath != Path.Combine(localAppData, "TitanIcon")) return;
-            
-                string pathCoH = Path.Combine(localAppData, "VirtualStore\\Program Files (x86)\\TitanIcon");
-                string pathCoHBeta = Path.Combine(localAppData, "VirtualStore\\Program Files (x86)\\TitanIcon");
-
-                if (Directory.Exists(pathCoH)) {
-                    DirCopy myCopy = new DirCopy(pathCoH, Settings.GamePath);
-                    myCopy.DirectoryCopyNoReplace();
-                }
-
-                if (Directory.Exists(pathCoHBeta))
-                {
-                    DirCopy myCopy = new DirCopy(pathCoHBeta, Settings.GamePath);
-                    myCopy.DirectoryCopyNoReplace(); 
-                }
-
-            } catch (Exception ex) {
-                MyToolkit.ErrorReporter(ex, this.Name + ".Form_Load");
-            }
         }
 
         private void Skin()
