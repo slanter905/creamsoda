@@ -264,7 +264,7 @@ namespace Tequila
             List<string> Manifests = Settings.Manifests;
 
             if (Manifests.Count == 0) {
-                Manifests.Add("http://dl.dropboxusercontent.com/u/37952257/Tequila/titanicon.xml");
+                Manifests.Add("http://patch.savecoh.com/manifest.xml");
                 Settings.Manifests = Manifests;
             }
         
