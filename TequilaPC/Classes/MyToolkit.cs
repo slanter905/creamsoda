@@ -72,10 +72,16 @@ class MyToolkit
 
 
     public static void ActivityLog(string Line) {
-
-        using (StreamWriter writer = new StreamWriter(Path.Combine(Tequila.Settings.GamePath, "TequilaActivityLog.txt"), true))
+        try
         {
-            writer.WriteLine("[" + DateTime.Now.ToString() + "]\t" + Line);
+            using (StreamWriter writer = new StreamWriter(Path.Combine(Tequila.Settings.GamePath, "TequilaActivityLog.txt"), true))
+            {
+                writer.WriteLine("[" + DateTime.Now.ToString() + "]\t" + Line);
+            }
+        }
+        catch (Exception ex)
+        {
+
         }
     }
 
