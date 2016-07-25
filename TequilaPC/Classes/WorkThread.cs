@@ -204,7 +204,15 @@ namespace Tequila
                 ProgressEventArgs e = new ProgressEventArgs(i, m_ManifestFileList.Count);
 
                 Fingerprint LocalFingerprint;
-                if (System.IO.File.Exists(ManifestFingerprint.FullName))
+                if (ManifestFingerprint.Size == 0)
+                {
+                    // File is to be deleted
+                    if (System.IO.File.Exists(ManifestFingerprint.FullName))
+                    {
+                        System.IO.File.Delete(ManifestFingerprint.FullName);
+                    }
+                }
+                else if (System.IO.File.Exists(ManifestFingerprint.FullName))
                 {
                     // File exists locally, lets start verifying it. First check if     
                     // the checksum matches the one in our last run log, if so there    
