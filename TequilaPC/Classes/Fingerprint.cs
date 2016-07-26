@@ -5,6 +5,29 @@ using System.Text;
 using System.IO;
 using System.Security.Cryptography;
 
+public class DownloadURL
+{
+    public DownloadURL(string URL)
+    {
+        m_URL = URL.Trim();
+        m_PullCount = 0;
+    }
+    
+    public string URL { get { return URL;} }
+    public int PullCount { get { return m_PullCount; } }
+    
+    // This is different from the URL property in that it will keep a count. 
+    // Sometimes we will want to remove URLs that have been pulled too many times.
+    public string PullURL()
+    {
+        m_PullCount++;
+        return m_URL; 
+    }
+    
+    protected string m_URL = "";
+    protected int m_PullCount = 0; 
+}
+
 /************************************************************************
 *  This class exists for two purposes: either give it a path and it     *
 *  will automatically load a file size and md5 checsum, or give         *
@@ -18,7 +41,8 @@ public class Fingerprint
     private long m_Size;
     private string m_Checksum;
     private bool m_mismatch = false;
-    private ArrayList m_DownloadURLs = new ArrayList();
+    //private ArrayList m_DownloadURLs = new ArrayList();
+    private List<DownloadURL> m_DownloadURLs = new List<DownloadURL>();
     private bool m_warn = true;
     private static Random rand = new Random();
 
@@ -30,12 +54,22 @@ public class Fingerprint
     public string Checksum { get { return m_Checksum; } }
     public bool Mismatch { get { return m_mismatch; } set { m_mismatch = value; } }
     public bool Warn { get { return m_warn; } set { m_warn = Warn; } }
+
     public string DownloadURL { 
         get {
             if (m_DownloadURLs.Count >= 1)
             {
                 int randomIndex = rand.Next(0, m_DownloadURLs.Count);
-                return m_DownloadURLs[randomIndex].ToString();
+
+                // Pull the random URL
+                string returnURL = m_DownloadURLs[randomIndex].PullURL();
+                
+                // If this URL has been pulled 5 times or more, remove it from the list
+                if (m_DownloadURLs[randomIndex].PullCount >= 5) {
+                    m_DownloadURLs.RemoveAt(randomIndex);
+                }
+
+                return returnURL;
             } else {
                 return "";
             }
@@ -92,7 +126,7 @@ public class Fingerprint
     /**********************************************************************/
 
     public void AddDownloadURL(string URL) {
-        m_DownloadURLs.Add(URL.Trim());
+        m_DownloadURLs.Add(new DownloadURL(URL));
     }
 
     /// <summary>

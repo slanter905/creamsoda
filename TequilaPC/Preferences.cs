@@ -112,6 +112,12 @@ namespace Tequila
             Settings.GamePath = myPath;
         }
 
+        private void btnDeleteManifest_Click(object sender, EventArgs e)
+        {
+            DeleteSelectedManifest();
+            btnDelete.Enabled = false;
+        }
+
         private void btnAddManifest_Click(object sender, EventArgs e)
         {
             List<string> Manifests = (List<string>)lbManifests.DataSource;
@@ -208,6 +214,11 @@ namespace Tequila
             } catch (Exception ex) {
                 MyToolkit.ErrorReporter(ex, "Preferences.SelfRelocate");
             }
+        }
+
+        private void lbManifests_Click(object sender, EventArgs e)
+        {
+            btnDelete.Enabled = true;
         }
     }
 }

@@ -424,7 +424,11 @@ namespace Tequila
         }
 
         private void ReValidate() {
-            try {
+            try
+            {
+                pnlErrors.Visible = false;
+                webBrowser1.Visible = true;
+
                 MyToolkit.ActivityLog("Revalidation process started");
                 ListBox1.DataSource = null;
                 File.Delete(Path.Combine(Settings.GamePath, "tequilalog.xml"));

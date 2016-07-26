@@ -41,6 +41,7 @@
             this.btnRevalidate = new System.Windows.Forms.Button();
             this.lbManifests = new System.Windows.Forms.ListBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.btnDelete = new System.Windows.Forms.Button();
             this.btnAddManifest = new System.Windows.Forms.Button();
             this.txtNewManifest = new System.Windows.Forms.TextBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -158,8 +159,9 @@
             this.lbManifests.FormattingEnabled = true;
             this.lbManifests.Location = new System.Drawing.Point(6, 46);
             this.lbManifests.Name = "lbManifests";
-            this.lbManifests.Size = new System.Drawing.Size(360, 82);
+            this.lbManifests.Size = new System.Drawing.Size(304, 82);
             this.lbManifests.TabIndex = 15;
+            this.lbManifests.Click += new System.EventHandler(this.lbManifests_Click);
             this.lbManifests.KeyUp += new System.Windows.Forms.KeyEventHandler(this.lbManifests_KeyUp);
             // 
             // groupBox1
@@ -167,6 +169,7 @@
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Controls.Add(this.btnDelete);
             this.groupBox1.Controls.Add(this.btnAddManifest);
             this.groupBox1.Controls.Add(this.txtNewManifest);
             this.groupBox1.Controls.Add(this.lbManifests);
@@ -176,6 +179,17 @@
             this.groupBox1.TabIndex = 12;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Manifests";
+            // 
+            // btnDelete
+            // 
+            this.btnDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnDelete.Location = new System.Drawing.Point(316, 46);
+            this.btnDelete.Name = "btnDelete";
+            this.btnDelete.Size = new System.Drawing.Size(50, 82);
+            this.btnDelete.TabIndex = 14;
+            this.btnDelete.Text = "Delete";
+            this.btnDelete.UseVisualStyleBackColor = true;
+            this.btnDelete.Click += new System.EventHandler(this.btnDeleteManifest_Click);
             // 
             // btnAddManifest
             // 
@@ -265,7 +279,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnOK;
-            this.ClientSize = new System.Drawing.Size(384, 362);
+            this.ClientSize = new System.Drawing.Size(384, 384);
             this.ControlBox = false;
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);
@@ -313,5 +327,6 @@
         private System.Windows.Forms.Button btnInstallPathBrowse;
         private System.Windows.Forms.Label lblInstallPath;
         private System.Windows.Forms.GroupBox groupBox4;
+        private System.Windows.Forms.Button btnDelete;
     }
 }
