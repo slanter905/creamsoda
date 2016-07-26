@@ -13,7 +13,7 @@ namespace Tequila
 
         public static bool SetupNeeded {
             get {
-                return GamePath == "" || !File.Exists(Path.Combine(GamePath, "icon.exe"));
+                return GamePath == "" || !File.Exists(Path.Combine(GamePath, "Tequila.exe"));
             }
         }
 
