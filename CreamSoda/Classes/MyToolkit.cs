@@ -48,15 +48,16 @@ class MyToolkit
     /// <returns>False if we cant write to the path.</returns>
     public static bool InstallDirSafe(string path) {
         try {
-            File.Move(Path.Combine(path, "Tequila.exe"), Path.Combine(path, "Tequila_rename.exe"));
-            if (File.Exists(Path.Combine(path, "Tequila_rename.exe")))
+            File.Move(Path.Combine(path, "CreamSoda.exe"), Path.Combine(path, "CreamSoda_rename.exe"));
+            if (File.Exists(Path.Combine(path, "CreamSoda_rename.exe")))
             {
-                File.Move(Path.Combine(path, "Tequila_rename.exe"), Path.Combine(path, "Tequila.exe"));
+                File.Move(Path.Combine(path, "CreamSoda_rename.exe"), Path.Combine(path, "CreamSoda.exe"));
                 return true;
             } else {
                 return false;
             }
-        } catch (Exception ex) {
+        } catch (Exception)
+        {
             return false;
         } 
     }
@@ -74,12 +75,12 @@ class MyToolkit
     public static void ActivityLog(string Line) {
         try
         {
-            using (StreamWriter writer = new StreamWriter(Path.Combine(Tequila.Settings.GamePath, "TequilaActivityLog.txt"), true))
+            using (StreamWriter writer = new StreamWriter(Path.Combine(CreamSoda.Settings.GamePath, "CreamSodaActivityLog.txt"), true))
             {
                 writer.WriteLine("[" + DateTime.Now.ToString() + "]\t" + Line);
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
 
         }

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Net;
 
-namespace Tequila
+namespace CreamSoda
 {
     class HTTP
     {
@@ -25,7 +25,8 @@ namespace Tequila
             {
                 uri = new Uri(URL);
             }
-            catch (Exception ex) {
+            catch (Exception)
+            {
                 return false;
             }
             m_client.DownloadFileCompleted += dlFinishedCallback;
@@ -57,7 +58,7 @@ namespace Tequila
                 {
                     return Convert.ToInt64(m_client.ResponseHeaders["Content-Length"]);
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     return 0;
                 }

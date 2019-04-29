@@ -12,7 +12,7 @@ using System.IO;
 using System.Windows.Forms;
 using System.Diagnostics;
 
-namespace Tequila
+namespace CreamSoda
 {
     class WorkThread
     {
@@ -99,7 +99,7 @@ namespace Tequila
 
         public string LogPath {
             get {
-                return Path.Combine(Settings.GamePath, "tequilalog.xml");
+                return Path.Combine(Settings.GamePath, "CreamSodalog.xml");
             }
         }
 
@@ -138,7 +138,8 @@ namespace Tequila
                     {
                         LogNew.Save(LogPath);
                         saveSuccessful = true;
-                    } catch (Exception ex) {
+                    } catch (Exception)
+                    {
                         saveSuccessful = false;
                     }
                 }
@@ -182,7 +183,8 @@ namespace Tequila
                     return false;
                 }
             }
-            catch (Exception ex) {
+            catch (Exception)
+            {
                 return false;
             }
         }
@@ -258,7 +260,6 @@ namespace Tequila
             }
         }
 
-        private bool m_DownloadActive = false;
         public void DownloadFiles() {
 
             foreach (Fingerprint file in m_DownloadQueue)
@@ -281,7 +282,6 @@ namespace Tequila
                                              file.FullName + ".download"))
                         {
                             m_Status = "Downloading";
-                            m_DownloadActive = true;
                         }
                     }
                     catch (Exception ex) {
@@ -361,7 +361,6 @@ namespace Tequila
         void DownloadFileComplete(object sender, AsyncCompletedEventArgs e) 
         {
             m_current = "";
-            m_DownloadActive = false;
         }
 
         void dlProgress(object sender, DownloadProgressChangedEventArgs e)
@@ -379,7 +378,7 @@ namespace Tequila
 
             MyToolkit.ActivityLog("Attempting to download Manifest file \"" + ManifestURL + "\"");
             m_Status = "Fetching manifest";
-            LocalManifest = MyToolkit.ValidPath(Path.Combine(PathRoot, "tequila.xml"));
+            LocalManifest = MyToolkit.ValidPath(Path.Combine(PathRoot, "CreamSoda.xml"));
             client.StartDownload(new AsyncCompletedEventHandler(ManifestDownloadComplete),
                                 new DownloadProgressChangedEventHandler(dlProgress),
                                 ManifestURL,
@@ -449,8 +448,7 @@ namespace Tequila
                     if (Kill) return;
 
                     // Lets get this file's manifest information                                    
-                    long size;
-                    bool parseSucceed = long.TryParse(file.Attribute("size").Value.ToString(), out size); 
+                    bool parseSucceed = long.TryParse(file.Attribute("size").Value.ToString(), out long size);
                     bool Warn = true;
                     if (file.Attribute("warn") != null)
                         if (file.Attribute("warn").Value == "no")
@@ -460,8 +458,10 @@ namespace Tequila
 
                     if (fileName.Trim() != "")
                     {
-                        Fingerprint ManifestFingerprint = new Fingerprint(PathRoot, fileName, md5, size);
-                        ManifestFingerprint.Warn = Warn;
+                        Fingerprint ManifestFingerprint = new Fingerprint(PathRoot, fileName, md5, size)
+                        {
+                            Warn = Warn
+                        };
 
                         IEnumerable<XElement> URLs = file.Descendants("url");
 
@@ -492,14 +492,14 @@ namespace Tequila
                 MyToolkit.ActivityLog("Patching process canceled.");
 
                 try { myWorkThread.Abort(); }
-                catch (Exception ex) { }
+                catch (Exception) { }
             }
         }
 
         void SelfPatch() {
             try
             {
-                Fingerprint myFingerprint = new Fingerprint(Settings.GamePath, "Tequila.exe");
+                Fingerprint myFingerprint = new Fingerprint(Settings.GamePath, "CreamSoda.exe");
 
                 if (DontSelfUpdate) return;
                 MyToolkit.ActivityLog("Starting self-patch process.");
@@ -509,7 +509,7 @@ namespace Tequila
                 string[] oldFiles = Directory.GetFiles(Settings.GamePath, "*.old");
                 foreach (string oldFile in oldFiles) {
                     try { File.Delete(oldFile); }
-                    catch (Exception ex) { }
+                    catch (Exception) { }
                 }
 
                 // OK now thats out of the way, lets determine if we need to self patch or not!!                    
@@ -517,14 +517,13 @@ namespace Tequila
                 m_Status = "Self patching";
                 foreach (XElement launcher in launchers)
                 {
-                    if (launcher.Attribute("id").Value == "tequila")
+                    if (launcher.Attribute("id").Value == "CreamSoda")
                     {
 
-                        long size = 0;
-                        long.TryParse(launcher.Attribute("size").Value.ToString(), out size);
+                        long.TryParse(launcher.Attribute("size").Value.ToString(), out long size);
                         string md5 = launcher.Attribute("md5").Value;
 
-                        Fingerprint remoteLauncher = new Fingerprint(Settings.GamePath, "Tequila.exe", md5, size);
+                        Fingerprint remoteLauncher = new Fingerprint(Settings.GamePath, "CreamSoda.exe", md5, size);
 
                         if (!myFingerprint.Equals(remoteLauncher))
                         {
@@ -550,7 +549,6 @@ namespace Tequila
                                                  remoteLauncher.FullName + ".download"))
                             {
                                 m_Status = "Downloading";
-                                m_DownloadActive = true;
                             }
 
                             m_current = remoteLauncher.FullName;
@@ -566,7 +564,6 @@ namespace Tequila
                                 }
                                 System.Threading.Thread.Sleep(10);
                             }
-                            m_DownloadActive = false;
                             MyToolkit.ActivityLog("New patcher version downloaded...");
 
                             // Make sure the downloaded file is not corrupted                       
@@ -599,11 +596,13 @@ namespace Tequila
                                 File.Move(myFingerprint.FullName, TrashName);
                                 File.Move(myFingerprint.FullName + ".download", myFingerprint.FullName);
 
-                                var startInfo = new ProcessStartInfo();
-                                startInfo.FileName = myFingerprint.FullName;
-                                startInfo.Arguments = MyToolkit.AllArgs();
+                                var startInfo = new ProcessStartInfo
+                                {
+                                    FileName = myFingerprint.FullName,
+                                    Arguments = MyToolkit.AllArgs()
+                                };
 
-                                MyToolkit.ActivityLog("Tequila has been patched successfuly. Restarting.");
+                                MyToolkit.ActivityLog("CreamSoda has been patched successfuly. Restarting.");
 
                                 Process.Start(startInfo);
 

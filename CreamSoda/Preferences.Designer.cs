@@ -1,4 +1,4 @@
-﻿namespace Tequila
+namespace CreamSoda
 {
     partial class Preferences
     {
@@ -114,9 +114,9 @@
             this.ckbQuitOnLaunch.AutoSize = true;
             this.ckbQuitOnLaunch.Location = new System.Drawing.Point(113, 41);
             this.ckbQuitOnLaunch.Name = "ckbQuitOnLaunch";
-            this.ckbQuitOnLaunch.Size = new System.Drawing.Size(198, 17);
+            this.ckbQuitOnLaunch.Size = new System.Drawing.Size(218, 17);
             this.ckbQuitOnLaunch.TabIndex = 3;
-            this.ckbQuitOnLaunch.Text = "Close Tequila after starting the game";
+            this.ckbQuitOnLaunch.Text = "Close CreamSoda after starting the game";
             this.ckbQuitOnLaunch.UseVisualStyleBackColor = true;
             this.ckbQuitOnLaunch.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
             // 
@@ -279,7 +279,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnOK;
-            this.ClientSize = new System.Drawing.Size(384, 362);
+            this.ClientSize = new System.Drawing.Size(384, 384);
             this.ControlBox = false;
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);

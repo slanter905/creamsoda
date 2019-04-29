@@ -14,20 +14,18 @@ using System.Collections;
 using System.Diagnostics;
 using System.Threading;
 
-namespace Tequila
+namespace CreamSoda
 {
-    public partial class Tequila : Form
+    public partial class CreamSoda : Form
     {
         WorkThread myWorker;
-        DirCopy myCopyObj;
-        Thread myCopyDirThread;
 
         private bool NoMove = false;
         private bool DevMode = false;
         
         string ManifestURL = "";
 
-        public Tequila()
+        public CreamSoda()
         {
             InitializeComponent();
         }
@@ -36,19 +34,20 @@ namespace Tequila
             try {
                 if (Settings.SetupNeeded)
                 {
-                    MyToolkit.ActivityLog("Setting up Tequila");
+                    MyToolkit.ActivityLog("Setting up CreamSoda");
                     string myPath = "";
                     bool PathValid = false;
                     FolderBrowserDialog FileBox;
 
                     do {
-                        FileBox = new FolderBrowserDialog();
-
-                        FileBox.Description = "Select a location where you would like to install Tequila; preferably under My Documents or Application Data. Do not use a folder under Program Files.";
-                        FileBox.SelectedPath = Application.StartupPath;
+                        FileBox = new FolderBrowserDialog
+                        {
+                            Description = "Select a location where you would like to install CreamSoda; preferably under My Documents or Application Data. Do not use a folder under Program Files.",
+                            SelectedPath = Application.StartupPath
+                        };
 
                         if (FileBox.ShowDialog(this) == System.Windows.Forms.DialogResult.Cancel) {
-                            MessageBox.Show("You must select a valid install directory to continue.\nTequila will now quit. Restart Tequila once you have a valid installation path.");
+                            MessageBox.Show("You must select a valid install directory to continue.\nCreamSoda will now quit. Restart CreamSoda once you have a valid installation path.");
                             Application.Exit();
                             return false;
                         }
@@ -60,7 +59,7 @@ namespace Tequila
 
                     Settings.GamePath = myPath;
 
-                    MyToolkit.ActivityLog("Tequila installed at \"" + myPath + "\"");
+                    MyToolkit.ActivityLog("CreamSoda installed at \"" + myPath + "\"");
                 }
 
                 SelfRelocate();
@@ -82,8 +81,8 @@ namespace Tequila
             BackColor = Settings.BGColor;
             label1.ForeColor = Settings.TextColor;
             lblStatus.ForeColor = Settings.TextColor;
-            ListBox1.BackColor = Settings.BGColor;
-            ListBox1.ForeColor = Settings.TextColor;
+            ListBox1.BackColor = Settings.ListColor;
+            ListBox1.ForeColor = Settings.ListTextColor;
         }
 
         private void ScanParameters() {
@@ -101,7 +100,7 @@ namespace Tequila
                 // Check for parameters overriding self patching                                    
                 else if (MyToolkit.args[i].Trim() == "-noselfpatch" ||
                          MyToolkit.args[i].Trim() == "-noselfupdate" ||
-                         MyToolkit.args[i].Trim() == "-nodisassemblejohnny5")
+                         MyToolkit.args[i].Trim() == "-nodisassemblejohnny5") // He's alive. Nice one ;)
                 {
                     WorkThread.DontSelfUpdate = true;
                 }
@@ -173,7 +172,7 @@ namespace Tequila
             try
             {
 
-                Process[] prs = Process.GetProcessesByName("tequila");
+                Process[] prs = Process.GetProcessesByName("CreamSoda");
                 Process me = Process.GetCurrentProcess();
                 int killcount = 0;
                 int killfailcount = 0;
@@ -186,16 +185,17 @@ namespace Tequila
                         try
                         {
                             pr.Kill();
-                        } catch (Exception ex) {
+                        } catch (Exception)
+                        {
                             killfailcount++;
                         }
                     }
                 }
 
                 if (killcount > 0) Thread.Sleep(2000);
-                if (killfailcount > 0) MessageBox.Show(null, "Found a running instance of Tequila but was not able to terminate it.", "Warning!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                if (killfailcount > 0) MessageBox.Show(null, "Found a running instance of CreamSoda but was not able to terminate it.", "Warning!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 
-            } catch (Exception ex) { }
+            } catch (Exception) { }
         }
 
 
@@ -236,7 +236,7 @@ namespace Tequila
             List<string> Manifests = Settings.Manifests;
 
             if (Manifests.Count == 0) {
-                Manifests.Add("http://patch.savecoh.com/manifest.xml");
+                Manifests.Add("http://thunderspy.com/manifest.xml");
                 Settings.Manifests = Manifests;
             }
         
@@ -261,15 +261,17 @@ namespace Tequila
             {
                 MyToolkit.ActivityLog("Started patching");
                 string PathRoot = Settings.GamePath;
-                string LocalManifest = PathRoot + @"tequila.xml";
+                string LocalManifest = PathRoot + @"CreamSoda.xml";
 
-                btnPlay.Text = "...";
+                btnPlay.Text = "Please wait...";
                 btnPlay.Enabled = false;
                 cbManifest.Enabled = false;
 
-                myWorker = new WorkThread(ManifestURL);
-                myWorker.LocalManifest = LocalManifest;
-                myWorker.PathRoot = PathRoot;
+                myWorker = new WorkThread(ManifestURL)
+                {
+                    LocalManifest = LocalManifest,
+                    PathRoot = PathRoot
+                };
                 myWorker.DownloadManifest();
             } catch (Exception ex) {
                 MyToolkit.ErrorReporter(ex, this.Name + ".StartUp");
@@ -298,27 +300,17 @@ namespace Tequila
             }
         }
 
-
         private void timer_Tick(object sender, EventArgs e)
         {
             try
             {
-                if (myCopyObj != null)
-                {
-                    if (myCopyObj.Active)
-                    {
-                        Progress.Value = myCopyObj.Progress;
-                        return;
-                    }
-                }
-
                 if (myWorker == null)
                 {
                     StartUp();
                     return;
                 }
 
-                if (myWorker.ForumURL != "" && myWorker.ForumURL != webBrowser1.Tag && myWorker.ForumURL != webBrowser1.Url.AbsoluteUri && !webBrowser1.IsBusy)
+                if ((myWorker.ForumURL != "") && (myWorker.ForumURL != (String)webBrowser1.Tag) && (myWorker.ForumURL != webBrowser1.Url.AbsoluteUri) && (!webBrowser1.IsBusy))
                 {
                     MyToolkit.ActivityLog("Loading Web Browser URL to: \"" + myWorker.ForumURL + "\"");
                     webBrowser1.Tag = myWorker.ForumURL;
@@ -336,8 +328,9 @@ namespace Tequila
                         foreach (XElement profile in Profiles)
                         {
                             items.Add(new LaunchProfile(profile.Value.ToString().Replace("My App: ", "").Trim(),
-                                                         profile.Attribute("exec").Value,
-                                                         profile.Attribute("params").Value));
+                                                         profile.GetAttributeValueOrDefault("exec"),
+                                                         profile.GetAttributeValueOrDefault("website"),
+                                                         profile.GetAttributeValueOrDefault("params")));
                         }
 
                         if (DevMode) {
@@ -346,8 +339,9 @@ namespace Tequila
                             foreach (XElement profile in Profiles)
                             {
                                 items.Add(new LaunchProfile(profile.Value.ToString().Replace("My App: ", "").Trim(),
-                                                             profile.Attribute("exec").Value,
-                                                             profile.Attribute("params").Value));
+                                                             profile.GetAttributeValueOrDefault("exec"),
+                                                             profile.GetAttributeValueOrDefault("website"),
+                                                             profile.GetAttributeValueOrDefault("params")));
                             }
                         }
 
@@ -370,10 +364,12 @@ namespace Tequila
             try {
                 MyToolkit.ActivityLog("User clicked play with the following profile: " + ((LaunchProfile)ListBox1.SelectedItem).Text);
 
-                var startInfo = new ProcessStartInfo();
-                startInfo.WorkingDirectory = Settings.GamePath;
-                startInfo.FileName = ((LaunchProfile)ListBox1.SelectedItem).Exec;
-                startInfo.Arguments = ((LaunchProfile)ListBox1.SelectedItem).Params;
+                var startInfo = new ProcessStartInfo
+                {
+                    WorkingDirectory = Settings.GamePath,
+                    FileName = ((LaunchProfile)ListBox1.SelectedItem).Exec,
+                    Arguments = ((LaunchProfile)ListBox1.SelectedItem).Params
+                };
                 startInfo.Arguments += " " + Settings.GameParams;
 
                 Process.Start(startInfo);
@@ -404,8 +400,6 @@ namespace Tequila
             MyToolkit.ActivityLog("Application quitting");
             WorkThread.Kill = true;
             DirCopy.Kill = true;
-
-            if(myCopyDirThread != null) if(myCopyDirThread.IsAlive) try { myCopyDirThread.Abort(); } catch (Exception ex) { }
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -431,7 +425,7 @@ namespace Tequila
 
                 MyToolkit.ActivityLog("Revalidation process started");
                 ListBox1.DataSource = null;
-                File.Delete(Path.Combine(Settings.GamePath, "tequilalog.xml"));
+                File.Delete(Path.Combine(Settings.GamePath, "CreamSodalog.xml"));
                 timer1.Enabled = Setup();
                 StartUp();
             } catch (Exception ex) {
@@ -450,5 +444,9 @@ namespace Tequila
             }
         }
 
+        private void ListBox1_Click(object sender, EventArgs e)
+        {
+            this.webBrowser1.Navigate(((LaunchProfile)this.ListBox1.SelectedItem).Website);
+        }
     }
 }

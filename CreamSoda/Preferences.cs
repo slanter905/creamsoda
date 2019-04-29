@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -8,7 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO;
 
-namespace Tequila
+namespace CreamSoda
 {
     public partial class Preferences : Form
     {
@@ -75,7 +75,7 @@ namespace Tequila
                         lbManifests.SelectedIndex = i;
                     }
                 }
-            } catch (Exception ex) {}
+            } catch (Exception) { }
         }
 
         private void btnRevalidate_Click(object sender, EventArgs e)
@@ -92,10 +92,11 @@ namespace Tequila
 
             do
             {
-                FileBox = new FolderBrowserDialog();
-
-                FileBox.Description = "Select a location where you would like to install Tequila; preferably under My Documents or Application Data. Do not use a folder under Program Files.";
-                FileBox.SelectedPath = Settings.GamePath;
+                FileBox = new FolderBrowserDialog
+                {
+                    Description = "Select a location where you would like to install Cream Soda; preferably under My Documents or Application Data. Do not use a folder under Program Files.",
+                    SelectedPath = Settings.GamePath
+                };
 
                 if (FileBox.ShowDialog(this) == System.Windows.Forms.DialogResult.Cancel)
                 {
@@ -148,7 +149,7 @@ namespace Tequila
                         lbManifests.SelectedIndex = i;
                     }
                 }
-            } catch (Exception ex) { }
+            } catch (Exception) { }
         }
 
         private void DeleteSelectedManifest()
@@ -160,7 +161,8 @@ namespace Tequila
             lbManifests.DataSource = Settings.Manifests;
             try {
                 lbManifests.SelectedIndex = SelectedIndex - 1;
-            } catch (Exception ex){
+            } catch (Exception)
+            {
                 lbManifests.SelectedIndex = 0;
             }
         }
@@ -181,9 +183,9 @@ namespace Tequila
                 if (!File.Exists(Application.ExecutablePath)) return;
 
                 string ShortcutPath = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
-                string ShortcutTarget = Path.Combine(Settings.GamePath, "Tequila.exe");
+                string ShortcutTarget = Path.Combine(Settings.GamePath, "CreamSoda.exe");
 
-                MyToolkit.ActivityLog("Self Relocating tequila to \"" + ShortcutTarget + "\"");
+                MyToolkit.ActivityLog("Self Relocating CreamSoda to \"" + ShortcutTarget + "\"");
 
                 if (!Directory.Exists(Settings.GamePath))
                     Directory.CreateDirectory(Settings.GamePath);
@@ -191,11 +193,13 @@ namespace Tequila
                 try {
                     if (File.Exists(ShortcutTarget)) File.Delete(ShortcutTarget);
                     File.Move(Application.ExecutablePath, ShortcutTarget);
-                } catch (Exception ex) {
+                } catch (Exception)
+                {
                     File.Copy(Application.ExecutablePath, ShortcutTarget);
                     try { File.Move(Application.ExecutablePath, Path.Combine(Application.StartupPath, "deleteme.txt")); }
-                    catch (Exception ex2) {
-                        MyToolkit.ActivityLog("Failed to relocate Tequila to \"" + ShortcutTarget + "\"");  
+                    catch (Exception)
+                    {
+                        MyToolkit.ActivityLog("Failed to relocate CreamSoda to \"" + ShortcutTarget + "\"");  
                     }
                 }
 
@@ -205,7 +209,7 @@ namespace Tequila
                         //shortcut.WorkingDirectory = Path.GetDirectoryName(ShortcutTarget);
                         shortcut.Description = "Drink up!";
                         shortcut.DisplayMode = ShellLink.LinkDisplayMode.edmNormal;
-                        shortcut.Save(Path.Combine(ShortcutPath, "Tequila.lnk"));
+                        shortcut.Save(Path.Combine(ShortcutPath, "CreamSoda.lnk"));
                     }
                 } catch (Exception ex) {
                     MyToolkit.ActivityLog("Failed to create desktop shortcut \"" + ShortcutTarget + "\"");  

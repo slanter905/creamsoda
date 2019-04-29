@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 
-namespace Tequila
+namespace CreamSoda
 {
     class DirCopy
     {
@@ -90,7 +90,7 @@ namespace Tequila
                     }
 
                     try { file.CopyTo(temppath, true); }
-                    catch (Exception ex) { }
+                    catch (Exception) { }
                 
                     m_FilesDone += file.Length;
                 }
@@ -119,7 +119,7 @@ namespace Tequila
                 foreach (FileInfo file in files) {
                     if (Kill) return 0;
                     try { count += file.Length; }
-                    catch (Exception ex) { }
+                    catch (Exception) { }
                 }
 
                 foreach (DirectoryInfo subdir in dirs) {
