@@ -22,7 +22,7 @@ namespace CreamSoda
 
     public static class Helpers
     {
-        public static string GetValueOrDefault(this XAttribute attribute, string defaultValue = null)
+        public static string GetValueOrDefault(this XAttribute attribute, string defaultValue = "")
         {
             if (attribute == null)
                 return defaultValue;
@@ -30,7 +30,7 @@ namespace CreamSoda
                 return attribute.Value;
         }
 
-        public static string GetAttributeValueOrDefault(this XElement element, string attributeName, string defaultValue = null)
+        public static string GetAttributeValueOrDefault(this XElement element, string attributeName, string defaultValue = "")
         {
             if (element == null)
                 return defaultValue;
